@@ -181,6 +181,25 @@ begin
 end;
 $$;
 
+create function cancel_my_appointment(p_id uuid) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  update appointments
+  set status = 'cancelled'
+  where id = p_id
+    and is_own_client(client_id)
+    and status in ('pending', 'confirmed')
+    and starts_at > now();
+
+  if not found then
+    raise exception 'Não foi possível cancelar este horário' using errcode = 'P0001';
+  end if;
+end;
+$$;
+
+revoke all on function cancel_my_appointment from public;
+grant execute on function cancel_my_appointment to authenticated;
+
 revoke all on function busy_slots from public;
 revoke all on function create_appointment from public;
 grant execute on function busy_slots to anon, authenticated;
