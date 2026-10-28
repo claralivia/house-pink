@@ -991,7 +991,12 @@ body {
   font-weight: 600;
 }
 
+.site:has(> .subpage) {
+  display: flex;
+  flex-direction: column;
+}
 .subpage {
+  flex: 1;
   position: relative;
   overflow: hidden;
 }
@@ -1029,7 +1034,9 @@ button.back {
 }
 .ag-date {
   font-size: 20px;
-  text-transform: capitalize;
+}
+.ag-date::first-letter {
+  text-transform: uppercase;
 }
 .ag-list {
   display: grid;
