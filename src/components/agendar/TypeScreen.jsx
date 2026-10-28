@@ -36,7 +36,7 @@ export default function TypeScreen({ choice, onBack, onPick, onNext }) {
       </div>
       <BottomBar>
         <AppButton full disabled={!type} onClick={onNext}>
-          Escolher data
+          {type ? 'Escolher data' : 'Escolha um tipo para continuar'}
         </AppButton>
       </BottomBar>
     </>

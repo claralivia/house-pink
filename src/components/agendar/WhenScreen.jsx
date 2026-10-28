@@ -17,6 +17,7 @@ export default function WhenScreen({
   onNext,
 }) {
   const slots = availability.days.find((day) => day.date === date)?.slots ?? []
+  const pending = `Escolha ${date ? 'um horário' : 'uma data'} para continuar`
 
   return (
     <>
@@ -62,7 +63,7 @@ export default function WhenScreen({
       ) : null}
       <BottomBar>
         <AppButton full disabled={minutes === null} onClick={onNext}>
-          {minutes === null ? 'Escolha um horário' : `Continuar com ${clock(minutes)}`}
+          {minutes === null ? pending : `Continuar com ${clock(minutes)}`}
         </AppButton>
       </BottomBar>
     </>
