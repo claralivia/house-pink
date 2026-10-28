@@ -90,6 +90,19 @@ language sql stable security definer set search_path = public as $$
   where user_id = auth.uid() or lower(email) = lower(auth.jwt() ->> 'email')
 $$;
 
+create function serves_client(p_client uuid) returns boolean
+language sql stable security definer set search_path = public as $$
+  select exists (
+    select 1 from appointments
+    where client_id = p_client and professional_id = current_professional_id()
+  )
+$$;
+
+create function is_own_client(p_client uuid) returns boolean
+language sql stable security definer set search_path = public as $$
+  select exists (select 1 from clients where id = p_client and user_id = auth.uid())
+$$;
+
 create function busy_slots(p_professional uuid, p_from timestamptz, p_to timestamptz)
 returns table (starts_at timestamptz, ends_at timestamptz)
 language sql stable security definer set search_path = public as $$
@@ -223,17 +236,11 @@ create policy time_off_write on time_off for all
   with check (professional_id = current_professional_id());
 
 create policy clients_read on clients for select using (
-  user_id = auth.uid()
-  or exists (
-    select 1 from appointments a
-    where a.client_id = clients.id and a.professional_id = current_professional_id()
-  )
+  user_id = auth.uid() or serves_client(id)
 );
 
 create policy appointments_professional on appointments for all
   using (professional_id = current_professional_id())
   with check (professional_id = current_professional_id());
 
-create policy appointments_client_read on appointments for select using (
-  exists (select 1 from clients c where c.id = client_id and c.user_id = auth.uid())
-);
+create policy appointments_client_read on appointments for select using (is_own_client(client_id));
