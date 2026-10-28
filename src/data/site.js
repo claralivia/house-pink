@@ -1,6 +1,6 @@
 export const SALON = {
   name: 'House Pink Nails & Lashes',
-  instagram: 'housepinkln',
+  instagram: 'housepinknl',
   hours: 'Segunda a sábado',
   address: {
     street: 'Rua Cruz Saldanha, 50, sala F',
