@@ -1,11 +1,12 @@
 # House Pink
 
-Site e sistema de agendamento do **House Pink Nails & Lashes**, salão em Fortaleza com duas profissionais independentes: **Bruna Ítala** (unhas de porcelana) e **Herlany Lessa** (cílios e sobrancelhas). Hoje reúne a página inicial do salão e uma página provisória de agendamento; o agendamento online é a próxima etapa.
+Site e sistema de agendamento do **House Pink Nails & Lashes**, salão em Fortaleza com duas profissionais independentes: **Bruna Ítala** (unhas de porcelana) e **Herlany Lessa** (cílios e sobrancelhas). Hoje reúne a página inicial do salão e o agendamento online, em que a cliente escolhe serviço, dia e horário só com nome e WhatsApp.
 
 ## Stack
 
 - [React](https://react.dev/) 19 + [Vite](https://vite.dev/)
 - [React Router](https://reactrouter.com/)
+- [Supabase](https://supabase.com/) (Postgres, regras de segurança por linha e funções)
 - CSS puro, com o desenho responsivo em `src/styles.css`
 - [ESLint](https://eslint.org/) e [Prettier](https://prettier.io/)
 - Deploy no [Vercel](https://vercel.com/)
@@ -13,7 +14,7 @@ Site e sistema de agendamento do **House Pink Nails & Lashes**, salão em Fortal
 ## Telas
 
 - **Início (`/`)** — responsiva (celular, tablet e computador), com abertura animada, fotos, serviços por profissional, o diferencial da sessão conjunta (as duas atendem ao mesmo tempo), passo a passo e contatos.
-- **Agendar (`/agendar`)** — página provisória que leva ao WhatsApp da profissional do serviço escolhido.
+- **Agendar (`/agendar`)** — escolha do serviço, do dia e do horário, com a agenda de cada profissional e a janela de dias liberados. Sem criar conta: só nome e WhatsApp.
 
 Os valores dos serviços não aparecem em nenhuma página pública.
 
@@ -25,8 +26,16 @@ Os valores dos serviços não aparecem em nenhuma página pública.
 
 ```bash
 npm install
+cp .env.example .env.local
 npm run dev
 ```
+
+Preencha o `.env.local` com a URL e a chave publicável do projeto no Supabase (Settings > API Keys):
+
+| Variável            | Descrição                             |
+| ------------------- | ------------------------------------- |
+| `VITE_SUPABASE_URL` | URL do projeto no Supabase            |
+| `VITE_SUPABASE_KEY` | Chave publicável (`sb_publishable_…`) |
 
 O site sobe em `http://localhost:5173`.
 
@@ -53,14 +62,27 @@ src/
 │   ├── site.js          salão, profissionais e títulos das páginas
 │   ├── content.js       textos e listas da página inicial
 │   └── assets.js        caminhos da logo, da borboleta e da foto
-├── lib/                 funções puras (links, endereço, classes, abertura)
-├── hooks/               useIntro e usePageTitle
+├── lib/                 api (Supabase), datas, horários livres, telefone, links, endereço, classes, abertura
+├── hooks/               useAsync, useCatalog, useAvailability, useIntro e usePageTitle
 ├── components/
-│   ├── ui/              Button, Butterfly, Kicker, SectionHeading, ExternalLink, Site
+│   ├── ui/              Button, Butterfly, Chip, Kicker, SectionHeading, ExternalLink, Site
 │   ├── layout/          Header e Footer
-│   └── home/            seções da página inicial
+│   ├── home/            seções da página inicial
+│   └── agendar/         etapas do agendamento
 └── pages/               Home e Agendar
+supabase/
+├── schema.sql           tabelas, regras de segurança e funções
+└── seed.sql             profissionais, serviços, horários e preços de exemplo
 ```
+
+## Banco de dados
+
+O esquema fica em `supabase/schema.sql` e deve ser rodado no SQL Editor do Supabase, seguido de `supabase/seed.sql`.
+
+- Cada profissional tem a própria agenda: o banco impede dois agendamentos sobrepostos para a mesma profissional, e a sessão conjunta roda em paralelo.
+- Os preços ficam em `service_prices`, legível só por quem está logado. Os preços do `seed.sql` são de exemplo.
+- A cliente agenda pela função `create_appointment`, que confere janela de dias, folgas e expediente. Os horários ocupados saem por `busy_slots`, sem dados de clientes.
+- Cada profissional enxerga só a própria agenda e a própria receita.
 
 ## Dados do salão
 
@@ -79,7 +101,7 @@ Acompanhe a versão mais recente e online através deste link:
 
 [Deploy Vercel](https://house-pink-two.vercel.app/)
 
-Cada push na branch `main` publica uma nova versão automaticamente.
+Cada push na branch `main` publica uma nova versão automaticamente. As variáveis `VITE_SUPABASE_URL` e `VITE_SUPABASE_KEY` precisam estar configuradas no projeto do Vercel.
 
 ## Autor & Contato
 
