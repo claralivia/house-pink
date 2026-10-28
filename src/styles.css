@@ -1017,6 +1017,65 @@ body {
   font-size: 14px;
 }
 
+button.back {
+  border-width: 0 0 2px;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+.ag-day {
+  max-width: 720px;
+  margin-top: 36px;
+}
+.ag-date {
+  font-size: 20px;
+  text-transform: capitalize;
+}
+.ag-list {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ag-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 16px;
+  align-items: start;
+  padding: 16px 18px;
+  border-radius: 16px 16px 4px 4px;
+  background: var(--nude);
+}
+.ag-row.cancelled {
+  opacity: 0.55;
+}
+.ag-time {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+}
+.ag-name {
+  font-weight: 700;
+}
+.ag-service {
+  color: var(--muted);
+  font-size: 14px;
+}
+.ag-status {
+  grid-column: 2;
+  font-size: 13px;
+  font-weight: 700;
+}
+.ag-actions {
+  display: flex;
+  grid-column: 1 / -1;
+  gap: 8px;
+}
+.ag-actions .chip {
+  min-height: 38px;
+  font-size: 14px;
+}
+
 .bk-step {
   max-width: 720px;
   margin-top: 40px;
