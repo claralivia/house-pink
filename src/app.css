@@ -1,19 +1,20 @@
 .app {
-  --bg: #fbf1f4;
+  --bg: #f8f3ef;
   --surface: #ffffff;
-  --surface-sunken: #f4e4eb;
-  --ink: #2a1a22;
-  --ink-muted: #6e5560;
-  --brand: #be2f6e;
-  --brand-hover: #a3255c;
+  --surface-sunken: #efe3dd;
+  --ink: #141012;
+  --ink-muted: #5f565b;
+  --brand: #141012;
+  --brand-hover: #c4006a;
   --on-brand: #ffffff;
-  --brand-soft: #fde4ee;
-  --brand-ink: #8f1d4f;
-  --border: #efd5de;
-  --border-control: #a47a8b;
-  --focus: var(--ink);
-  --cat-nails-ink: var(--brand-ink);
-  --cat-brows-ink: #0f5e5c;
+  --brand-soft: #fce6f0;
+  --brand-ink: #141012;
+  --brand-bright: #ff0088;
+  --border: #e6d8d0;
+  --border-control: #8a7a80;
+  --focus: var(--brand-bright);
+  --cat-nails-ink: #141012;
+  --cat-brows-ink: #a8005a;
   --success: #1d7a4b;
   --success-soft: #e0f4e8;
   --warning: #8a5200;
@@ -27,44 +28,19 @@
   --space-5: 24px;
   --space-6: 32px;
   --touch-min: 48px;
-  --radius-md: 14px;
+  --radius-md: 12px;
   --radius-lg: 20px;
   --radius-pill: 999px;
-  --shadow-menu: 0 2px 6px rgba(42, 26, 34, 0.1), 0 12px 32px rgba(42, 26, 34, 0.16);
+  --shadow-menu: 0 2px 6px rgba(20, 16, 18, 0.1), 0 12px 32px rgba(20, 16, 18, 0.16);
   min-height: 100vh;
   background: var(--bg);
   color: var(--ink);
   font:
-    400 16px/24px 'Inter',
+    400 16px/24px 'Figtree',
     system-ui,
     -apple-system,
     'Segoe UI',
     sans-serif;
-}
-
-@media (prefers-color-scheme: dark) {
-  .app {
-    --bg: #1a1015;
-    --surface: #251820;
-    --surface-sunken: #140b10;
-    --ink: #fbeaf1;
-    --ink-muted: #c4a3b2;
-    --brand: #f0749f;
-    --brand-hover: #f58db3;
-    --on-brand: #2a0f1a;
-    --brand-soft: #4a1e32;
-    --brand-ink: #ffc2da;
-    --border: #4a2d3a;
-    --border-control: #9a7385;
-    --cat-brows-ink: #a6ece7;
-    --success: #6fd69b;
-    --success-soft: #123324;
-    --warning: #f2c06b;
-    --warning-soft: #3a2a0c;
-    --danger: #ff9a92;
-    --danger-soft: #3d1512;
-    --shadow-menu: 0 2px 6px rgba(0, 0, 0, 0.5), 0 12px 32px rgba(0, 0, 0, 0.5);
-  }
 }
 
 .app *,
@@ -110,22 +86,23 @@
   margin-top: var(--space-6);
   color: var(--ink-muted);
   font:
-    500 13px/18px 'Inter',
+    500 13px/18px 'Figtree',
     sans-serif;
   text-align: center;
 }
 
 .app-headline {
   font:
-    700 24px/30px 'Inter',
+    700 28px/34px 'Syne',
     sans-serif;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
 }
 .app-title {
   margin-top: var(--space-5);
   font:
-    600 18px/24px 'Inter',
+    700 20px/26px 'Syne',
     sans-serif;
+  letter-spacing: -0.01em;
 }
 .app-lead {
   margin-top: var(--space-2);
@@ -135,13 +112,13 @@
   margin: var(--space-5) var(--space-2) var(--space-2);
   color: var(--ink-muted);
   font:
-    600 14px/20px 'Inter',
+    600 14px/20px 'Figtree',
     sans-serif;
 }
 .app-cat {
   margin: var(--space-5) var(--space-2) var(--space-2);
   font:
-    700 14px/20px 'Inter',
+    700 14px/20px 'Figtree',
     sans-serif;
   letter-spacing: 0.02em;
 }
@@ -166,7 +143,7 @@
   background: none;
   color: var(--brand-ink);
   font:
-    600 16px/24px 'Inter',
+    600 16px/24px 'Figtree',
     sans-serif;
   cursor: pointer;
 }
@@ -232,7 +209,7 @@
   height: 20px;
 }
 .app-item-end .check {
-  color: var(--brand);
+  color: var(--brand-bright);
 }
 .app-price {
   color: var(--ink);
@@ -245,7 +222,7 @@
   gap: var(--space-1);
   color: var(--ink-muted);
   font:
-    500 13px/18px 'Inter',
+    500 13px/18px 'Figtree',
     sans-serif;
 }
 
@@ -259,7 +236,7 @@
   border: 1.5px solid transparent;
   border-radius: var(--radius-md);
   font:
-    600 16px/24px 'Inter',
+    600 16px/24px 'Figtree',
     sans-serif;
   cursor: pointer;
   transition:
@@ -293,7 +270,8 @@
   background: var(--brand-soft);
 }
 .app-btn:disabled {
-  border-color: var(--border);
+  border-style: dashed;
+  border-color: var(--border-control);
   background: var(--surface-sunken);
   color: var(--ink-muted);
   cursor: not-allowed;
@@ -339,7 +317,7 @@
   background: none;
   color: var(--ink-muted);
   font:
-    600 12px/16px 'Inter',
+    600 12px/16px 'Figtree',
     sans-serif;
   cursor: pointer;
 }
@@ -350,6 +328,9 @@
 .app-tab[aria-current='page'] {
   color: var(--brand-ink);
 }
+.app-tab[aria-current='page'] svg {
+  color: var(--brand-bright);
+}
 
 .app-field {
   display: grid;
@@ -358,7 +339,7 @@
 }
 .app-field label {
   font:
-    600 14px/20px 'Inter',
+    600 14px/20px 'Figtree',
     sans-serif;
 }
 .app-control {
@@ -370,7 +351,7 @@
   background: var(--surface);
   color: var(--ink);
   font:
-    400 16px/24px 'Inter',
+    400 16px/24px 'Figtree',
     sans-serif;
   transition: border-color 150ms;
 }
@@ -402,7 +383,7 @@
 .app-help {
   color: var(--ink-muted);
   font:
-    500 13px/18px 'Inter',
+    500 13px/18px 'Figtree',
     sans-serif;
 }
 
@@ -455,7 +436,7 @@
 }
 .app-cal-bar h2 {
   font:
-    700 18px/24px 'Inter',
+    700 18px/24px 'Syne',
     sans-serif;
 }
 .app-nav {
@@ -491,7 +472,7 @@
   padding: var(--space-1) 0 var(--space-2);
   color: var(--ink-muted);
   font:
-    600 13px/18px 'Inter',
+    600 13px/18px 'Figtree',
     sans-serif;
 }
 .app-day {
@@ -502,13 +483,13 @@
   background: none;
   color: var(--ink);
   font:
-    500 16px/24px 'Inter',
+    500 16px/24px 'Figtree',
     sans-serif;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   transition: background-color 150ms;
 }
-.app-day:hover:not(:disabled) {
+.app-day:hover:not(:disabled, [aria-pressed='true']) {
   background: var(--surface-sunken);
 }
 .app-day.today {
@@ -532,7 +513,7 @@
   margin-top: var(--space-3);
   color: var(--ink-muted);
   font:
-    500 13px/18px 'Inter',
+    500 13px/18px 'Figtree',
     sans-serif;
 }
 .app-late {
@@ -562,7 +543,7 @@
   background: var(--surface);
   color: var(--ink);
   font:
-    600 16px/24px 'Inter',
+    600 16px/24px 'Figtree',
     sans-serif;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
@@ -590,14 +571,14 @@
 }
 .app-time {
   font:
-    700 17px/22px 'Inter',
+    700 17px/22px 'Figtree',
     sans-serif;
   font-variant-numeric: tabular-nums;
 }
 .app-sub {
   color: var(--ink-muted);
   font:
-    500 13px/18px 'Inter',
+    500 13px/18px 'Figtree',
     sans-serif;
   font-variant-numeric: tabular-nums;
 }
@@ -610,7 +591,7 @@
   align-items: center;
   gap: var(--space-1);
   font:
-    600 14px/20px 'Inter',
+    600 14px/20px 'Figtree',
     sans-serif;
 }
 .app-status svg {
