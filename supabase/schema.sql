@@ -86,8 +86,7 @@ create index appointments_joint_group_idx on appointments (joint_group_id);
 
 create function current_professional_id() returns uuid
 language sql stable security definer set search_path = public as $$
-  select id from professionals
-  where user_id = auth.uid() or lower(email) = lower(auth.jwt() ->> 'email')
+  select id from professionals where user_id = auth.uid()
 $$;
 
 create function serves_client(p_client uuid) returns boolean
@@ -166,7 +165,11 @@ begin
     raise exception 'Horário fora do expediente' using errcode = 'P0001';
   end if;
 
-  insert into clients (name, whatsapp) values (p_name, p_whatsapp) returning id into v_client;
+  select id into v_client from clients where user_id = auth.uid();
+
+  if v_client is null then
+    insert into clients (name, whatsapp) values (p_name, p_whatsapp) returning id into v_client;
+  end if;
 
   insert into appointments (professional_id, client_id, service_type_id, starts_at, ends_at, price_cents)
   select v_professional, v_client, p_service_type, p_starts_at, v_ends_at, sp.price_cents
@@ -238,6 +241,26 @@ create policy time_off_write on time_off for all
 create policy clients_read on clients for select using (
   user_id = auth.uid() or serves_client(id)
 );
+
+create policy clients_update on clients for update
+  using (user_id = auth.uid()) with check (user_id = auth.uid());
+
+create function handle_new_user() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  insert into clients (user_id, name, whatsapp)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data ->> 'name', ''),
+    coalesce(new.raw_user_meta_data ->> 'whatsapp', '')
+  );
+  return new;
+end;
+$$;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function handle_new_user();
 
 create policy appointments_professional on appointments for all
   using (professional_id = current_professional_id())

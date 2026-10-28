@@ -44,3 +44,8 @@ select p.id, d, time '09:00', time '18:00'
 from professionals p
 cross join generate_series(1, 6) as d
 where p.key = 'herlany' or d > 1;
+
+update professionals p
+set user_id = u.id
+from auth.users u
+where lower(u.email) = lower(p.email) and p.user_id is null;
