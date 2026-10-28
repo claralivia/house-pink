@@ -11,6 +11,7 @@ export default function TypeScreen({ choice, onBack, onPick, onNext }) {
   return (
     <>
       <BackButton onClick={onBack}>Serviços</BackButton>
+      <p className="app-step">Passo 2 de 4</p>
       <h1 className="app-headline">{service.name}</h1>
       <p className="app-lead">Escolha o tipo.</p>
       <div className="app-group app-spaced" role="radiogroup" aria-label="Tipo">

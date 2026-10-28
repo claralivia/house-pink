@@ -14,6 +14,7 @@ const shortestDuration = (types) => Math.min(...types.map((type) => type.duratio
 export default function ServiceScreen({ catalog, onPick }) {
   return (
     <>
+      <p className="app-step">Passo 1 de 4</p>
       <h1 className="app-headline">Escolha o serviço</h1>
       <p className="app-lead">Sem criar conta: só o seu nome e o seu WhatsApp.</p>
       {catalog.map((pro) => (

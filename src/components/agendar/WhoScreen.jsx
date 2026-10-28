@@ -24,6 +24,7 @@ export default function WhoScreen({ choice, date, minutes, submitting, onBack, o
   return (
     <>
       <BackButton onClick={onBack}>Data e horário</BackButton>
+      <p className="app-step">Passo 4 de 4</p>
       <h1 className="app-headline">Seus dados</h1>
       <BookingSummary choice={choice} date={date} minutes={minutes} />
       <form id={FORM_ID} onSubmit={handleSubmit}>

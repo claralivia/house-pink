@@ -22,6 +22,7 @@ export default function WhenScreen({
   return (
     <>
       <BackButton onClick={onBack}>{choice.service.name}</BackButton>
+      <p className="app-step">Passo 3 de 4</p>
       <h1 className="app-headline">Escolha a data</h1>
       <p className="app-lead">
         {choice.type.name} com a{' '}

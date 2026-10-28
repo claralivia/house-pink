@@ -31,7 +31,7 @@ export default function Entrar() {
   }
 
   return (
-    <AppShell logo credit>
+    <AppShell hideAccount credit>
       <h1 className="app-headline">Entrar na agenda</h1>
       <p className="app-lead">Acesso das profissionais do salão.</p>
       <form onSubmit={submit}>

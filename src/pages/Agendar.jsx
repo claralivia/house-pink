@@ -114,7 +114,6 @@ export default function Agendar() {
 
   return (
     <AppShell
-      logo
       credit={!booking && step === 'service'}
       withBar={Boolean(booking) || step !== 'service'}
     >

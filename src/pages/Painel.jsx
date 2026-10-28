@@ -52,7 +52,7 @@ export default function Painel() {
   }
 
   return loading || session ? (
-    <AppShell withBar bottom={<TabBar tabs={TABS} current={tab} onChange={setTab} />}>
+    <AppShell hideAccount withBar bottom={<TabBar tabs={TABS} current={tab} onChange={setTab} />}>
       {tab === 'agenda' ? (
         <>
           <h1 className="app-headline">Agenda</h1>
