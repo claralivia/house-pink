@@ -57,6 +57,36 @@ export const createAppointment = async ({ serviceTypeId, startsAt, name, whatsap
     }),
   )
 
+export const sendLoginLink = async (email) =>
+  unwrap(
+    await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/painel` },
+    }),
+  )
+
+export const signOut = async () => unwrap(await supabase.auth.signOut())
+
+export const fetchMyProfessional = async () => {
+  const id = unwrap(await supabase.rpc('current_professional_id'))
+  return id
+    ? unwrap(await supabase.from('professionals').select('id, key, name').eq('id', id).single())
+    : null
+}
+
+export const fetchAgenda = async (professionalId) =>
+  unwrap(
+    await supabase
+      .from('appointments')
+      .select('id, starts_at, status, clients(name, whatsapp), service_types(name, services(name))')
+      .eq('professional_id', professionalId)
+      .gte('starts_at', timestamp(todayIso(), 0))
+      .order('starts_at'),
+  )
+
+export const setAppointmentStatus = async (id, status) =>
+  unwrap(await supabase.from('appointments').update({ status }).eq('id', id))
+
 export const bookingErrorMessage = ({ code, message }) =>
   ({
     [CONFLICT_CODE]: 'Esse horário acabou de ser reservado. Escolha outro, por favor.',

@@ -4,6 +4,11 @@ const DAY_MS = 86_400_000
 
 const ISO = new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE })
 const SHORT_WEEKDAY = new Intl.DateTimeFormat('pt-BR', { timeZone: TIME_ZONE, weekday: 'short' })
+const CLOCK = new Intl.DateTimeFormat('pt-BR', {
+  timeZone: TIME_ZONE,
+  hour: '2-digit',
+  minute: '2-digit',
+})
 const LONG_DATE = new Intl.DateTimeFormat('pt-BR', {
   timeZone: TIME_ZONE,
   weekday: 'long',
@@ -36,5 +41,9 @@ export const toMinutes = (time) => {
 }
 
 export const clock = (minutes) => `${pad(Math.floor(minutes / 60))}:${pad(minutes % 60)}`
+
+export const dateOf = (value) => ISO.format(new Date(value))
+
+export const timeOf = (value) => CLOCK.format(new Date(value))
 
 export const timestamp = (isoDate, minutes) => `${isoDate}T${clock(minutes)}:00${OFFSET}`
