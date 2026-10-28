@@ -7,7 +7,7 @@ Site e sistema de agendamento do **House Pink Nails & Lashes**, salão em Fortal
 - [React](https://react.dev/) 19 + [Vite](https://vite.dev/)
 - [React Router](https://reactrouter.com/)
 - [Supabase](https://supabase.com/) (Postgres, regras de segurança por linha e funções)
-- CSS puro, com o desenho responsivo em `src/styles.css`
+- CSS puro: `src/styles.css` na página inicial e `src/app.css` no agendamento e na agenda, que seguem o design system (Inter, mobile-first)
 - [ESLint](https://eslint.org/) e [Prettier](https://prettier.io/)
 - Deploy no [Vercel](https://vercel.com/)
 
@@ -57,19 +57,22 @@ public/                  logo, favicon e fotos
 src/
 ├── main.jsx             bootstrap (React + Router)
 ├── App.jsx              rotas
-├── styles.css           estilos
+├── styles.css           estilos da página inicial
+├── app.css              estilos do agendamento e da agenda (design system)
 ├── data/
 │   ├── site.js          salão, profissionais e títulos das páginas
 │   ├── content.js       textos e listas da página inicial
 │   └── assets.js        caminhos da logo, da borboleta e da foto
 ├── lib/                 api (Supabase), datas, horários livres, telefone, links, endereço, classes, abertura
-├── hooks/               useAsync, useCatalog, useAvailability, useIntro e usePageTitle
+├── hooks/               useAsync, useCatalog, useAvailability, useSession, useIntro e usePageTitle
 ├── components/
-│   ├── ui/              Button, Butterfly, Chip, Kicker, SectionHeading, ExternalLink, Site
+│   ├── ui/              Button, Butterfly, Kicker, SectionHeading, ExternalLink, Site
 │   ├── layout/          Header e Footer
 │   ├── home/            seções da página inicial
-│   └── agendar/         etapas do agendamento
-└── pages/               Home e Agendar
+│   ├── app/             AppShell, AppButton, Field, Notice, TabBar, BottomBar, Icon
+│   ├── agendar/         telas do agendamento (serviço, tipo, data, dados, confirmação)
+│   └── painel/          agenda e troca de senha das profissionais
+└── pages/               Home, Agendar, Entrar e Painel
 supabase/
 ├── schema.sql           tabelas, regras de segurança e funções
 └── seed.sql             profissionais, serviços, horários e preços de exemplo
