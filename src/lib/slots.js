@@ -27,8 +27,12 @@ export const slotsForDay = ({ date, hours, timeOff, busy, duration, now }) =>
           return start > now && !isBusy(busy, start, start + duration * MINUTE_MS)
         })
 
+const isClosed = ({ hours, timeOff }, date) =>
+  isOff(timeOff, date) || !hours.some(({ weekday }) => weekday === weekdayOf(date))
+
 export const buildDays = ({ availability, duration, windowDays, now = Date.now() }) =>
   dateRange(todayIso(new Date(now)), windowDays).map((date) => ({
     date,
+    closed: isClosed(availability, date),
     slots: slotsForDay({ date, ...availability, duration, now }),
   }))

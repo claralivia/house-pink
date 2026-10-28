@@ -20,7 +20,7 @@ export const fetchCatalog = async () =>
     await supabase
       .from('professionals')
       .select(
-        'id, key, name, booking_window_days, services(id, name, position, service_types(id, name, duration_minutes, position))',
+        'id, key, name, booking_window_days, services(id, name, position, service_types(id, name, duration_minutes, position, service_prices(price_cents)))',
       )
       .eq('services.active', true)
       .eq('services.service_types.active', true)
@@ -76,7 +76,9 @@ export const fetchAgenda = async (professionalId) =>
   unwrap(
     await supabase
       .from('appointments')
-      .select('id, starts_at, status, clients(name, whatsapp), service_types(name, services(name))')
+      .select(
+        'id, starts_at, ends_at, status, price_cents, clients(name, whatsapp), service_types(name, services(name))',
+      )
       .eq('professional_id', professionalId)
       .gte('starts_at', timestamp(todayIso(), 0))
       .order('starts_at'),
