@@ -87,6 +87,16 @@ export const fetchMyAppointments = async () =>
       .order('starts_at', { ascending: false }),
   )
 
+export const cancelMyAppointment = async (id) =>
+  unwrap(await supabase.rpc('cancel_my_appointment', { p_id: id }))
+
+export const sendPasswordReset = async (email) =>
+  unwrap(
+    await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/redefinir-senha`,
+    }),
+  )
+
 export const changePassword = async (password) =>
   unwrap(await supabase.auth.updateUser({ password }))
 

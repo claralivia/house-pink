@@ -5,6 +5,8 @@ import Cadastro from './pages/Cadastro.jsx'
 import Conta from './pages/Conta.jsx'
 import Entrar from './pages/Entrar.jsx'
 import Painel from './pages/Painel.jsx'
+import Recuperar from './pages/Recuperar.jsx'
+import RedefinirSenha from './pages/RedefinirSenha.jsx'
 
 export default function App() {
   return (
@@ -15,6 +17,8 @@ export default function App() {
       <Route path="/cadastro" element={<Cadastro />} />
       <Route path="/conta" element={<Conta />} />
       <Route path="/painel" element={<Painel />} />
+      <Route path="/recuperar" element={<Recuperar />} />
+      <Route path="/redefinir-senha" element={<RedefinirSenha />} />
       <Route path="*" element={<Home />} />
     </Routes>
   )

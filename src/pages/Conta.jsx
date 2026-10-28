@@ -11,7 +11,7 @@ import { PAGE_TITLES } from '../data/site.js'
 import { useAccount } from '../hooks/useAccount.js'
 import { useAsync } from '../hooks/useAsync.js'
 import { usePageTitle } from '../hooks/usePageTitle.js'
-import { fetchMyAppointments, fetchMyClient, signOut } from '../lib/api.js'
+import { cancelMyAppointment, fetchMyAppointments, fetchMyClient, signOut } from '../lib/api.js'
 
 const TABS = [
   { id: 'horarios', label: 'Horários', icon: 'cal' },
@@ -23,6 +23,7 @@ export default function Conta() {
 
   const account = useAccount()
   const [tab, setTab] = useState('horarios')
+  const [cancelFailed, setCancelFailed] = useState(false)
   const userId = account.session?.user.id
   const clientKey = account.role === 'client' ? userId : null
   const loadClient = useCallback(() => fetchMyClient(userId), [userId])
@@ -31,6 +32,16 @@ export default function Conta() {
 
   if (!account.loading && !account.session) return <Navigate to="/entrar" replace />
   if (account.role === 'pro') return <Navigate to="/painel" replace />
+
+  const cancel = async (id) => {
+    setCancelFailed(false)
+    try {
+      await cancelMyAppointment(id)
+      appointments.reload()
+    } catch {
+      setCancelFailed(true)
+    }
+  }
 
   const failed = client.error || appointments.error
   const loading = account.loading || client.loading || appointments.loading
@@ -50,7 +61,13 @@ export default function Conta() {
           <Link className="app-btn primary full" to="/agendar" style={{ marginTop: 16 }}>
             Agendar novo horário
           </Link>
-          <ClientAppointments appointments={appointments.data} />
+          {cancelFailed ? (
+            <Notice tone="danger" title="Não foi possível cancelar">
+              O horário já passou ou já foi cancelado. Se precisar, chame a profissional no
+              WhatsApp.
+            </Notice>
+          ) : null}
+          <ClientAppointments appointments={appointments.data} onCancel={cancel} />
         </>
       ) : null}
       {tab === 'perfil' && client.data ? (

@@ -43,6 +43,8 @@ export const PAGE_TITLES = {
   agendar: `Agendar | ${SALON.name}`,
   entrar: `Entrar | ${SALON.name}`,
   cadastro: `Criar conta | ${SALON.name}`,
+  recuperar: `Esqueci a senha | ${SALON.name}`,
+  redefinir: `Senha nova | ${SALON.name}`,
   conta: `Minha conta | ${SALON.name}`,
   painel: `Agenda | ${SALON.name}`,
 }

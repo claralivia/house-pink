@@ -64,6 +64,9 @@ export default function Entrar() {
           {sending ? 'Entrando...' : 'Entrar'}
         </AppButton>
       </form>
+      <Link className="app-back" to="/recuperar">
+        Esqueci a senha
+      </Link>
       <h2 className="app-title">Ainda não tem conta?</h2>
       <p className="app-lead">
         Com conta, você vê os valores dos serviços e acompanha os seus horários.
