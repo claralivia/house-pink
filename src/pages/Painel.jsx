@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { Navigate } from 'react-router-dom'
 import AgendaList from '../components/painel/AgendaList.jsx'
+import PasswordForm from '../components/painel/PasswordForm.jsx'
 import Footer from '../components/layout/Footer.jsx'
 import Header from '../components/layout/Header.jsx'
 import SectionHeading from '../components/ui/SectionHeading.jsx'
@@ -35,7 +36,12 @@ export default function Painel() {
           O e-mail {session.user.email} não está cadastrado como profissional do salão.
         </p>
       )
-    return <AgendaList appointments={agenda.data ?? []} onStatus={changeStatus} />
+    return (
+      <>
+        <AgendaList appointments={agenda.data ?? []} onStatus={changeStatus} />
+        <PasswordForm />
+      </>
+    )
   }
 
   return loading || session ? (

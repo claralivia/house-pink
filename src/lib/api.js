@@ -57,13 +57,11 @@ export const createAppointment = async ({ serviceTypeId, startsAt, name, whatsap
     }),
   )
 
-export const sendLoginLink = async (email) =>
-  unwrap(
-    await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: `${window.location.origin}/painel` },
-    }),
-  )
+export const signIn = async (email, password) =>
+  unwrap(await supabase.auth.signInWithPassword({ email, password }))
+
+export const changePassword = async (password) =>
+  unwrap(await supabase.auth.updateUser({ password }))
 
 export const signOut = async () => unwrap(await supabase.auth.signOut())
 
