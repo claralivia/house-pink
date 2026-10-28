@@ -73,6 +73,14 @@ Tudo o que é dado do salão fica em `src/data`:
 
 As fotos de unhas, cílios e sobrancelhas são provisórias, do [Unsplash](https://unsplash.com/license) (uso comercial livre): `hvqHtZqNMeI`, `hxp1rPHSUzI` e `2IK78QZhkfo`. Troque pelas fotos do trabalho das duas em `public/img/`.
 
+## Protótipo Online (Deploy Vercel)
+
+Acompanhe a versão mais recente e online através deste link:
+
+[Deploy Vercel](https://house-pink-two.vercel.app/)
+
+Cada push na branch `main` publica uma nova versão automaticamente.
+
 ## Autor & Contato
 
 Clara Moura. 🧡
