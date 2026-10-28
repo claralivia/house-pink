@@ -1,13 +1,17 @@
 import { Link } from 'react-router-dom'
 import { LOGO } from '../../data/assets.js'
 import { SALON } from '../../data/site.js'
-import { useSession } from '../../hooks/useSession.js'
+import { useAccount } from '../../hooks/useAccount.js'
+
+const ACCOUNT_LINK = {
+  pro: { to: '/painel', label: 'Minha agenda' },
+  client: { to: '/conta', label: 'Minha conta' },
+}
+const LOGIN_LINK = { to: '/entrar', label: 'Entrar' }
 
 export default function AppHeader({ hideAccount }) {
-  const { session } = useSession()
-  const account = session
-    ? { to: '/painel', label: 'Minha agenda' }
-    : { to: '/entrar', label: 'Entrar' }
+  const { role } = useAccount()
+  const account = ACCOUNT_LINK[role] ?? LOGIN_LINK
 
   return (
     <header className="app-header">

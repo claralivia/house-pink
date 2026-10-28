@@ -6,7 +6,9 @@ import Field from '../components/app/Field.jsx'
 import Notice from '../components/app/Notice.jsx'
 import { PAGE_TITLES } from '../data/site.js'
 import { usePageTitle } from '../hooks/usePageTitle.js'
-import { signIn } from '../lib/api.js'
+import { fetchMyProfessional, signIn } from '../lib/api.js'
+
+const homeFor = (professional) => (professional ? '/painel' : '/conta')
 
 export default function Entrar() {
   usePageTitle(PAGE_TITLES.entrar)
@@ -23,7 +25,7 @@ export default function Entrar() {
     setFailed(false)
     try {
       await signIn(email.trim(), password)
-      navigate('/painel')
+      navigate(homeFor(await fetchMyProfessional()))
     } catch {
       setFailed(true)
       setSending(false)
@@ -32,8 +34,10 @@ export default function Entrar() {
 
   return (
     <AppShell hideAccount credit>
-      <h1 className="app-headline">Entrar na agenda</h1>
-      <p className="app-lead">Acesso das profissionais do salão.</p>
+      <h1 className="app-headline">Entrar</h1>
+      <p className="app-lead">
+        Clientes e profissionais entram por aqui, com o mesmo e-mail e senha.
+      </p>
       <form onSubmit={submit}>
         <Field
           label="E-mail"
@@ -60,8 +64,15 @@ export default function Entrar() {
           {sending ? 'Entrando...' : 'Entrar'}
         </AppButton>
       </form>
+      <h2 className="app-title">Ainda não tem conta?</h2>
+      <p className="app-lead">
+        Com conta, você vê os valores dos serviços e acompanha os seus horários.
+      </p>
+      <Link className="app-btn secondary full" to="/cadastro" style={{ marginTop: 16 }}>
+        Criar conta
+      </Link>
       <Link className="app-back" to="/" style={{ marginTop: 8 }}>
-        Voltar para a página inicial
+        Voltar para o site
       </Link>
     </AppShell>
   )

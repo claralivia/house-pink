@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import AppButton from '../components/app/AppButton.jsx'
 import AppShell from '../components/app/AppShell.jsx'
@@ -7,10 +7,10 @@ import TabBar from '../components/app/TabBar.jsx'
 import AgendaList from '../components/painel/AgendaList.jsx'
 import PasswordForm from '../components/painel/PasswordForm.jsx'
 import { PAGE_TITLES, PROS } from '../data/site.js'
+import { useAccount } from '../hooks/useAccount.js'
 import { useAsync } from '../hooks/useAsync.js'
 import { usePageTitle } from '../hooks/usePageTitle.js'
-import { useSession } from '../hooks/useSession.js'
-import { fetchAgenda, fetchMyProfessional, setAppointmentStatus, signOut } from '../lib/api.js'
+import { fetchAgenda, setAppointmentStatus, signOut } from '../lib/api.js'
 
 const TABS = [
   { id: 'agenda', label: 'Agenda', icon: 'cal' },
@@ -20,12 +20,17 @@ const TABS = [
 export default function Painel() {
   usePageTitle(PAGE_TITLES.painel)
 
-  const { loading, session } = useSession()
+  const account = useAccount()
   const [tab, setTab] = useState('agenda')
-  const profile = useAsync(fetchMyProfessional, session?.user.id)
-  const professional = profile.data && { ...PROS[profile.data.key], ...profile.data }
-  const loadAgenda = useCallback(() => fetchAgenda(profile.data.id), [profile.data])
-  const agenda = useAsync(loadAgenda, profile.data?.id)
+  const professional = useMemo(
+    () => account.professional && { ...PROS[account.professional.key], ...account.professional },
+    [account.professional],
+  )
+  const loadAgenda = useCallback(() => fetchAgenda(professional.id), [professional])
+  const agenda = useAsync(loadAgenda, professional?.id)
+
+  if (!account.loading && !account.session) return <Navigate to="/entrar" replace />
+  if (account.role === 'client') return <Navigate to="/conta" replace />
 
   const changeStatus = async (id, status) => {
     await setAppointmentStatus(id, status)
@@ -33,17 +38,11 @@ export default function Painel() {
   }
 
   const agendaView = () => {
-    if (profile.loading || agenda.loading) return <p className="app-lead">Carregando...</p>
-    if (profile.error || agenda.error)
+    if (account.loading || agenda.loading) return <p className="app-lead">Carregando...</p>
+    if (agenda.error)
       return (
         <Notice tone="danger" title="Não foi possível carregar a agenda">
           Atualize a página.
-        </Notice>
-      )
-    if (!professional)
-      return (
-        <Notice tone="warning" title="E-mail sem acesso">
-          {session.user.email} não está cadastrado como profissional do salão.
         </Notice>
       )
     return (
@@ -51,7 +50,7 @@ export default function Painel() {
     )
   }
 
-  return loading || session ? (
+  return (
     <AppShell hideAccount withBar bottom={<TabBar tabs={TABS} current={tab} onChange={setTab} />}>
       {tab === 'agenda' ? (
         <>
@@ -62,12 +61,12 @@ export default function Painel() {
               horários
             </p>
           ) : null}
-          {loading ? null : agendaView()}
+          {agendaView()}
         </>
       ) : (
         <>
           <h1 className="app-headline">Conta</h1>
-          {session ? <p className="app-lead">{session.user.email}</p> : null}
+          {account.session ? <p className="app-lead">{account.session.user.email}</p> : null}
           <PasswordForm />
           <AppButton variant="secondary" full onClick={signOut} style={{ marginTop: 24 }}>
             Sair
@@ -75,7 +74,5 @@ export default function Painel() {
         </>
       )}
     </AppShell>
-  ) : (
-    <Navigate to="/entrar" replace />
   )
 }

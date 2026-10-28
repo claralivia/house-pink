@@ -60,6 +60,33 @@ export const createAppointment = async ({ serviceTypeId, startsAt, name, whatsap
 export const signIn = async (email, password) =>
   unwrap(await supabase.auth.signInWithPassword({ email, password }))
 
+export const signUp = async ({ email, password, name, whatsapp }) =>
+  unwrap(
+    await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name, whatsapp }, emailRedirectTo: `${window.location.origin}/conta` },
+    }),
+  )
+
+export const fetchMyClient = async (userId) =>
+  unwrap(
+    await supabase.from('clients').select('id, name, whatsapp').eq('user_id', userId).maybeSingle(),
+  )
+
+export const updateMyClient = async (userId, { name, whatsapp }) =>
+  unwrap(await supabase.from('clients').update({ name, whatsapp }).eq('user_id', userId))
+
+export const fetchMyAppointments = async () =>
+  unwrap(
+    await supabase
+      .from('appointments')
+      .select(
+        'id, starts_at, ends_at, status, price_cents, service_types(name, services(name, professionals(key, name)))',
+      )
+      .order('starts_at', { ascending: false }),
+  )
+
 export const changePassword = async (password) =>
   unwrap(await supabase.auth.updateUser({ password }))
 

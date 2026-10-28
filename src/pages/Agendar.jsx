@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import AppShell from '../components/app/AppShell.jsx'
 import Notice from '../components/app/Notice.jsx'
 import Confirmation from '../components/agendar/Confirmation.jsx'
@@ -9,9 +9,11 @@ import WhoScreen from '../components/agendar/WhoScreen.jsx'
 import AppButton from '../components/app/AppButton.jsx'
 import { PAGE_TITLES, PROS } from '../data/site.js'
 import { useAvailability } from '../hooks/useAvailability.js'
+import { useAccount } from '../hooks/useAccount.js'
+import { useAsync } from '../hooks/useAsync.js'
 import { useCatalog } from '../hooks/useCatalog.js'
 import { usePageTitle } from '../hooks/usePageTitle.js'
-import { bookingErrorMessage, createAppointment } from '../lib/api.js'
+import { bookingErrorMessage, createAppointment, fetchMyClient } from '../lib/api.js'
 import { timestamp } from '../lib/dates.js'
 import { whatsappUrl } from '../lib/links.js'
 
@@ -19,6 +21,10 @@ export default function Agendar() {
   usePageTitle(PAGE_TITLES.agendar)
 
   const catalog = useCatalog()
+  const account = useAccount()
+  const userId = account.session?.user.id
+  const loadClient = useCallback(() => fetchMyClient(userId), [userId])
+  const myClient = useAsync(loadClient, account.role === 'client' ? userId : null)
   const [step, setStep] = useState('service')
   const [choice, setChoice] = useState(null)
   const [date, setDate] = useState(null)
@@ -106,6 +112,7 @@ export default function Agendar() {
           date={date}
           minutes={minutes}
           submitting={submitting}
+          initial={myClient.data}
           onBack={() => setStep('when')}
           onSubmit={submit}
         />

@@ -615,6 +615,10 @@
   column-gap: var(--space-3);
   padding: var(--space-4);
 }
+.app-row.client {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
 .app-row.cancelled {
   opacity: 0.6;
 }

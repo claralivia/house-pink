@@ -42,5 +42,7 @@ export const PAGE_TITLES = {
   home: `${SALON.name} | Unhas, cílios e sobrancelhas em Fortaleza`,
   agendar: `Agendar | ${SALON.name}`,
   entrar: `Entrar | ${SALON.name}`,
+  cadastro: `Criar conta | ${SALON.name}`,
+  conta: `Minha conta | ${SALON.name}`,
   painel: `Agenda | ${SALON.name}`,
 }

@@ -9,9 +9,17 @@ import BookingSummary from './BookingSummary.jsx'
 
 const FORM_ID = 'booking-form'
 
-export default function WhoScreen({ choice, date, minutes, submitting, onBack, onSubmit }) {
-  const [name, setName] = useState('')
-  const [whatsapp, setWhatsapp] = useState('')
+export default function WhoScreen({
+  choice,
+  date,
+  minutes,
+  submitting,
+  initial,
+  onBack,
+  onSubmit,
+}) {
+  const [name, setName] = useState(initial?.name ?? '')
+  const [whatsapp, setWhatsapp] = useState(initial?.whatsapp.replace(/^55/, '') ?? '')
   const [invalid, setInvalid] = useState(false)
 
   const handleSubmit = (event) => {
