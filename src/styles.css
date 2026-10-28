@@ -990,6 +990,12 @@ body {
   color: #fff;
   font-weight: 600;
 }
+.foot a {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 
 @media (min-width: 760px) {
   .wrap {
