@@ -15,6 +15,10 @@ Site e sistema de agendamento do **House Pink Nails & Lashes**, salão em Fortal
 
 - **Início (`/`)** — responsiva (celular, tablet e computador), com abertura animada, fotos, serviços por profissional, o diferencial da sessão conjunta (as duas atendem ao mesmo tempo), passo a passo e contatos.
 - **Agendar (`/agendar`)** — escolha do serviço, do dia e do horário, com a agenda de cada profissional e a janela de dias liberados. Sem criar conta: só nome e WhatsApp.
+- **Entrar (`/entrar`)** — login único com e-mail e senha: quem é profissional abre a agenda (`/painel`) e quem é cliente abre a conta (`/conta`).
+- **Criar conta (`/cadastro`)** — cadastro da cliente, que passa a ver os valores e a acompanhar os seus horários.
+- **Minha conta (`/conta`)** — horários da cliente (próximos e anteriores) e perfil.
+- **Agenda (`/painel`)** — agenda da profissional, com confirmar, concluir e cancelar horários.
 
 Os valores dos serviços não aparecem em nenhuma página pública.
 
@@ -85,7 +89,8 @@ O esquema fica em `supabase/schema.sql` e deve ser rodado no SQL Editor do Supab
 - Cada profissional tem a própria agenda: o banco impede dois agendamentos sobrepostos para a mesma profissional, e a sessão conjunta roda em paralelo.
 - Os preços ficam em `service_prices`, legível só por quem está logado. Os preços do `seed.sql` são de exemplo.
 - A cliente agenda pela função `create_appointment`, que confere janela de dias, folgas e expediente. Os horários ocupados saem por `busy_slots`, sem dados de clientes.
-- Cada profissional enxerga só a própria agenda e a própria receita.
+- Cada profissional enxerga só a própria agenda e a própria receita, e é reconhecida pelo vínculo da conta (`professionals.user_id`).
+- Ao criar uma conta, um gatilho cria o perfil da cliente (`clients`), que passa a ser usado nos agendamentos feitos logada.
 
 ## Dados do salão
 
