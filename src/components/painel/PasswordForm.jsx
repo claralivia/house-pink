@@ -1,43 +1,48 @@
 import { useState } from 'react'
 import { changePassword } from '../../lib/api.js'
+import AppButton from '../app/AppButton.jsx'
+import Field from '../app/Field.jsx'
+import Notice from '../app/Notice.jsx'
 
 const MIN_LENGTH = 8
 
 export default function PasswordForm() {
   const [password, setPassword] = useState('')
-  const [message, setMessage] = useState(null)
+  const [result, setResult] = useState(null)
 
   const submit = async (event) => {
     event.preventDefault()
     try {
       await changePassword(password)
       setPassword('')
-      setMessage('Senha alterada.')
+      setResult('success')
     } catch {
-      setMessage('Não foi possível alterar a senha. Tente outra.')
+      setResult('danger')
     }
   }
 
   return (
-    <section className="bk-step">
-      <h2 className="bk-title">Trocar senha</h2>
-      <form className="bk-form" onSubmit={submit}>
-        <label className="bk-field">
-          <span>Nova senha, com pelo menos {MIN_LENGTH} caracteres</span>
-          <input
-            type="password"
-            autoComplete="new-password"
-            minLength={MIN_LENGTH}
-            required
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </label>
-        {message ? <p className="bk-note">{message}</p> : null}
-        <button type="submit" className="chip">
-          Salvar nova senha
-        </button>
-      </form>
-    </section>
+    <form onSubmit={submit}>
+      <h2 className="app-title">Trocar senha</h2>
+      <Field
+        label="Nova senha"
+        type="password"
+        autoComplete="new-password"
+        minLength={MIN_LENGTH}
+        required
+        help={`Use pelo menos ${MIN_LENGTH} caracteres.`}
+        value={password}
+        onChange={(event) => setPassword(event.target.value)}
+      />
+      {result === 'success' ? <Notice tone="success" title="Senha alterada" /> : null}
+      {result === 'danger' ? (
+        <Notice tone="danger" title="Não foi possível alterar a senha">
+          Tente outra senha.
+        </Notice>
+      ) : null}
+      <AppButton full type="submit" style={{ marginTop: 16 }}>
+        Salvar nova senha
+      </AppButton>
+    </form>
   )
 }

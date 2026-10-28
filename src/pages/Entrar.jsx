@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import Footer from '../components/layout/Footer.jsx'
-import Header from '../components/layout/Header.jsx'
-import Butterfly from '../components/ui/Butterfly.jsx'
-import SectionHeading from '../components/ui/SectionHeading.jsx'
-import Site from '../components/ui/Site.jsx'
+import AppButton from '../components/app/AppButton.jsx'
+import AppShell from '../components/app/AppShell.jsx'
+import Field from '../components/app/Field.jsx'
+import Notice from '../components/app/Notice.jsx'
 import { PAGE_TITLES } from '../data/site.js'
 import { usePageTitle } from '../hooks/usePageTitle.js'
 import { signIn } from '../lib/api.js'
@@ -16,62 +15,54 @@ export default function Entrar() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [sending, setSending] = useState(false)
-  const [error, setError] = useState(null)
+  const [failed, setFailed] = useState(false)
 
   const submit = async (event) => {
     event.preventDefault()
     setSending(true)
-    setError(null)
+    setFailed(false)
     try {
       await signIn(email.trim(), password)
       navigate('/painel')
     } catch {
-      setError('E-mail ou senha incorretos.')
+      setFailed(true)
       setSending(false)
     }
   }
 
   return (
-    <Site>
-      <div className="subpage">
-        <Header />
-        <main className="wrap sec page">
-          <SectionHeading kicker="Profissionais" title="Entrar" as="h1" titleClassName="page-title">
-            <p className="lead">Acesse a sua agenda com o e-mail e a senha cadastrados.</p>
-          </SectionHeading>
-          <form className="bk-form" onSubmit={submit}>
-            <label className="bk-field">
-              <span>Seu e-mail</span>
-              <input
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-              />
-            </label>
-            <label className="bk-field">
-              <span>Sua senha</span>
-              <input
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-              />
-            </label>
-            {error ? <p className="bk-error">{error}</p> : null}
-            <button type="submit" className="btn wide" disabled={sending}>
-              {sending ? 'Entrando...' : 'Entrar'}
-              <Butterfly tone="white" className="bf" />
-            </button>
-          </form>
-          <Link className="back" to="/">
-            Voltar para a página inicial
-          </Link>
-        </main>
-      </div>
-      <Footer />
-    </Site>
+    <AppShell logo credit>
+      <h1 className="app-headline">Entrar na agenda</h1>
+      <p className="app-lead">Acesso das profissionais do salão.</p>
+      <form onSubmit={submit}>
+        <Field
+          label="E-mail"
+          type="email"
+          autoComplete="email"
+          required
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+        />
+        <Field
+          label="Senha"
+          type="password"
+          autoComplete="current-password"
+          required
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+        />
+        {failed ? (
+          <Notice tone="danger" title="E-mail ou senha incorretos">
+            Confira os dados e tente de novo.
+          </Notice>
+        ) : null}
+        <AppButton full type="submit" disabled={sending} style={{ marginTop: 24 }}>
+          {sending ? 'Entrando...' : 'Entrar'}
+        </AppButton>
+      </form>
+      <Link className="app-back" to="/" style={{ marginTop: 8 }}>
+        Voltar para a página inicial
+      </Link>
+    </AppShell>
   )
 }

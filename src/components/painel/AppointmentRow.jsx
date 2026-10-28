@@ -1,50 +1,64 @@
-import { longDate, dateOf, timeOf } from '../../lib/dates.js'
+import { timeOf } from '../../lib/dates.js'
 import { whatsappUrl } from '../../lib/links.js'
-import ExternalLink from '../ui/ExternalLink.jsx'
+import { formatPrice } from '../../lib/money.js'
+import AppButton from '../app/AppButton.jsx'
+import Icon from '../app/Icon.jsx'
 
-const STATUS_LABEL = {
-  pending: 'Pendente',
-  confirmed: 'Confirmado',
-  cancelled: 'Cancelado',
-  done: 'Concluído',
+const STATUS = {
+  pending: { label: 'Pendente', icon: 'clock', tone: 'warning' },
+  confirmed: { label: 'Confirmado', icon: 'ok', tone: 'success' },
+  done: { label: 'Concluído', icon: 'ok', tone: 'success' },
+  cancelled: { label: 'Cancelado', icon: 'close', tone: 'muted' },
 }
 
 const NEXT_ACTIONS = {
-  pending: [
-    { label: 'Confirmar', status: 'confirmed' },
-    { label: 'Cancelar', status: 'cancelled' },
-  ],
-  confirmed: [
-    { label: 'Concluir', status: 'done' },
-    { label: 'Cancelar', status: 'cancelled' },
-  ],
+  pending: [{ label: 'Confirmar', status: 'confirmed' }],
+  confirmed: [{ label: 'Concluir', status: 'done' }],
 }
 
-const reminder = ({ clients, starts_at }) =>
-  `Oi, ${clients.name}! Aqui é da House Pink, sobre o seu horário de ${longDate(dateOf(starts_at))}, às ${timeOf(starts_at)}.`
+const CANCEL = { label: 'Cancelar horário', status: 'cancelled' }
 
-export default function AppointmentRow({ appointment, onStatus }) {
-  const { id, starts_at, status, clients, service_types } = appointment
+const reminder = ({ clients, starts_at }) =>
+  `Oi, ${clients.name}! Aqui é da House Pink, sobre o seu horário das ${timeOf(starts_at)}.`
+
+export default function AppointmentRow({ appointment, pro, onStatus }) {
+  const { id, starts_at, ends_at, status, price_cents, clients, service_types } = appointment
+  const { label, icon, tone } = STATUS[status]
+  const actions = NEXT_ACTIONS[status] ? [...NEXT_ACTIONS[status], CANCEL] : []
 
   return (
-    <li className={`ag-row ${status}`}>
-      <strong className="ag-time">{timeOf(starts_at)}</strong>
-      <div className="ag-info">
-        <p className="ag-name">{clients.name}</p>
-        <p className="ag-service">
-          {service_types.services.name}, {service_types.name}
-        </p>
-        <ExternalLink href={whatsappUrl(clients, reminder(appointment))}>
-          WhatsApp da cliente
-        </ExternalLink>
+    <li className={`app-row ${status}`}>
+      <div>
+        <div className="app-time">{timeOf(starts_at)}</div>
+        <div className="app-sub">até {timeOf(ends_at)}</div>
       </div>
-      <span className="ag-status">{STATUS_LABEL[status]}</span>
-      <div className="ag-actions">
-        {(NEXT_ACTIONS[status] ?? []).map(({ label, status: next }) => (
-          <button key={next} type="button" className="chip" onClick={() => onStatus(id, next)}>
-            {label}
-          </button>
+      <div>
+        <div className="app-name">{clients.name}</div>
+        <div className="app-item-meta">
+          <span className={`app-who ${pro.key}`}>{pro.first}</span> · {service_types.services.name},{' '}
+          {service_types.name}
+        </div>
+      </div>
+      <div style={{ textAlign: 'right' }}>
+        {price_cents === null ? null : <div className="app-price">{formatPrice(price_cents)}</div>}
+        <span className={`app-status ${tone}`}>
+          <Icon name={icon} />
+          {label}
+        </span>
+      </div>
+      <div className="app-row-actions">
+        {actions.map(({ label: text, status: next }) => (
+          <AppButton
+            key={next}
+            variant={next === 'cancelled' ? 'ghost' : 'secondary'}
+            onClick={() => onStatus(id, next)}
+          >
+            {text}
+          </AppButton>
         ))}
+        <AppButton variant="ghost" href={whatsappUrl(clients, reminder(appointment))}>
+          WhatsApp da cliente
+        </AppButton>
       </div>
     </li>
   )
