@@ -18,7 +18,7 @@ Site e sistema de agendamento do **House Pink Nails & Lashes**, salão em Fortal
 - **Entrar (`/entrar`)** — login único com e-mail e senha: quem é profissional abre a agenda (`/painel`) e quem é cliente abre a conta (`/conta`).
 - **Criar conta (`/cadastro`)** — cadastro da cliente, que passa a ver os valores e a acompanhar os seus horários.
 - **Minha conta (`/conta`)** — horários da cliente (próximos e anteriores) e perfil.
-- **Agenda (`/painel`)** — da profissional: agenda (confirmar, concluir com a forma de pagamento e cancelar), ganhos do mês com filtro por Pix, cartão e dinheiro, e fotos dos serviços.
+- **Agenda (`/painel`)** — da profissional, com quatro abas: **Agenda** (confirmar, concluir com a forma de pagamento, registrar sinal, editar e cancelar horários), **Ganhos** (por dia, semana e mês, com filtro de Pix, cartão e dinheiro, sinal separado do restante e fechamento do período), **Serviços** (valor, duração, descrição, foto e disponibilidade de cada tipo) e **Ajustes** (prazo de agendamento, horário de atendimento, folgas e férias, sinal e regras de atendimento).
 
 Os valores dos serviços não aparecem em nenhuma página pública.
 
@@ -101,7 +101,7 @@ Tudo o que é dado do salão fica em `src/data`:
 
 ## Fotos
 
-A foto das duas e a das unhas são do salão (`duo.jpg`, `unhas.jpg`). As de cílios e sobrancelhas ainda são provisórias, do [Unsplash](https://unsplash.com/license) (uso comercial livre): `hxp1rPHSUzI` e `2IK78QZhkfo`. Troque pelas fotos de trabalho da Herlany em `public/img/`.
+A foto das duas e as de unhas são do salão (`duo.jpg`, `unhas*.jpg`). As fotos dos serviços da Herlany foram recortadas do catálogo dela (`public/img/servicos/`). Os cards de cílios e sobrancelhas da página inicial ainda usam fotos provisórias do [Unsplash](https://unsplash.com/license) (uso comercial livre).
 
 ## Protótipo Online (Deploy Vercel)
 
