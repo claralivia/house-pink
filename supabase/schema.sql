@@ -29,6 +29,7 @@ create table service_types (
   name text not null,
   duration_minutes integer not null check (duration_minutes > 0),
   description text,
+  image_url text,
   active boolean not null default true,
   position integer not null default 0
 );
@@ -289,3 +290,13 @@ create policy appointments_professional on appointments for all
   with check (professional_id = current_professional_id());
 
 create policy appointments_client_read on appointments for select using (is_own_client(client_id));
+
+insert into storage.buckets (id, name, public)
+values ('service-photos', 'service-photos', true)
+on conflict (id) do nothing;
+
+create policy service_photos_insert on storage.objects for insert to authenticated
+  with check (bucket_id = 'service-photos' and current_professional_id() is not null);
+
+create policy service_photos_update on storage.objects for update to authenticated
+  using (bucket_id = 'service-photos' and current_professional_id() is not null);

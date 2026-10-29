@@ -105,6 +105,14 @@ from professionals p
 cross join generate_series(2, 6) as d
 where p.key = 'herlany';
 
+-- Fotos das unhas da Bruna.
+update service_types st set image_url = v.url
+from services sv, professionals p, (values
+  ('Francesa reversa', '/img/unhas.jpg'),
+  ('Baby boomer', '/img/unhas-baby-boomer.jpg')
+) as v (name, url)
+where st.service_id = sv.id and sv.professional_id = p.id and p.key = 'bruna' and st.name = v.name;
+
 update professionals p
 set user_id = u.id
 from auth.users u
