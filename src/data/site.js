@@ -1,7 +1,7 @@
 export const SALON = {
   name: 'House Pink Nails & Lashes',
   instagram: 'housepinknl',
-  hours: 'Segunda a sábado',
+  hours: 'Terça a sábado, das 9h30 às 17h30',
   address: {
     street: 'Rua Cruz Saldanha, 50, sala F',
     district: 'Parquelândia',
@@ -18,7 +18,6 @@ export const PROS = {
     first: 'Bruna',
     area: 'Unhas de porcelana',
     short: 'Unhas',
-    outfit: 'de preto',
     instagram: 'brunaitalanails',
     whatsapp: '5585987413005',
   },
@@ -28,7 +27,6 @@ export const PROS = {
     first: 'Herlany',
     area: 'Cílios e sobrancelhas',
     short: 'Cílios e sobrancelhas',
-    outfit: 'de branco',
     instagram: 'herlanylessacilios',
     whatsapp: '5585987875576',
   },

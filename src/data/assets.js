@@ -5,4 +5,4 @@ export const BUTTERFLY = {
   white: '/logo/borboleta-branca.svg',
 }
 
-export const DUO_PHOTO = '/img/duo.webp'
+export const DUO_PHOTO = '/img/duo.jpg'

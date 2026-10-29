@@ -506,12 +506,13 @@ body {
 }
 .photo {
   position: absolute;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   z-index: 3;
   width: 100%;
-  -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent 99%);
-  mask-image: linear-gradient(to bottom, #000 80%, transparent 99%);
+  height: 100%;
+  border-radius: 50% 50% 20px 20px / 20% 20% 20px 20px;
+  object-fit: cover;
+  object-position: 50% 0;
   animation: rise 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) calc(var(--t) + 0.3s) both;
 }
 .pin {
