@@ -96,12 +96,15 @@ language sql stable security definer set search_path = public as $$
 $$;
 
 create function serves_client(p_client uuid) returns boolean
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = public as $
   select exists (
     select 1 from appointments
     where client_id = p_client and professional_id = current_professional_id()
+  ) or exists (
+    select 1 from professional_clients
+    where client_id = p_client and professional_id = current_professional_id()
   )
-$$;
+$;
 
 create function is_own_client(p_client uuid) returns boolean
 language sql stable security definer set search_path = public as $$
@@ -415,17 +418,13 @@ begin
     raise exception 'Este serviço é de outra profissional' using errcode = 'P0001';
   end if;
 
-  select c.id into v_client
-  from clients c
-  where c.user_id is null
-    and c.whatsapp = p_whatsapp
-    and exists (
-      select 1 from appointments a where a.client_id = c.id and a.professional_id = v_professional
-    )
+  select c.id into v_client from clients c
+  where c.whatsapp = p_whatsapp and serves_client(c.id)
   limit 1;
 
   if v_client is null then
     insert into clients (name, whatsapp) values (p_name, p_whatsapp) returning id into v_client;
+    insert into professional_clients (professional_id, client_id) values (v_professional, v_client);
   end if;
 
   insert into appointments (
@@ -444,3 +443,81 @@ $$;
 
 revoke all on function create_appointment_for_client from public;
 grant execute on function create_appointment_for_client to authenticated;
+
+-- Lista de clientes da profissional: cadastro manual e importação da planilha.
+create table professional_clients (
+  professional_id uuid not null references professionals (id) on delete cascade,
+  client_id uuid not null references clients (id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (professional_id, client_id)
+);
+
+alter table professional_clients enable row level security;
+
+create policy professional_clients_read on professional_clients for select
+  using (professional_id = current_professional_id());
+
+create function add_clients(p_clients jsonb) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare
+  v_professional uuid := current_professional_id();
+  v_item jsonb;
+  v_name text;
+  v_phone text;
+  v_client uuid;
+  v_created integer := 0;
+  v_skipped integer := 0;
+begin
+  if v_professional is null then
+    raise exception 'Sem permissão' using errcode = 'P0001';
+  end if;
+
+  for v_item in select * from jsonb_array_elements(p_clients) loop
+    v_name := trim(coalesce(v_item ->> 'name', ''));
+    v_phone := v_item ->> 'whatsapp';
+
+    if v_name = '' or v_phone is null then
+      v_skipped := v_skipped + 1;
+      continue;
+    end if;
+
+    select c.id into v_client from clients c
+    where c.whatsapp = v_phone and serves_client(c.id)
+    limit 1;
+
+    if v_client is not null then
+      v_skipped := v_skipped + 1;
+      continue;
+    end if;
+
+    insert into clients (name, whatsapp) values (v_name, v_phone) returning id into v_client;
+    insert into professional_clients (professional_id, client_id) values (v_professional, v_client);
+    v_created := v_created + 1;
+  end loop;
+
+  return jsonb_build_object('created', v_created, 'skipped', v_skipped);
+end;
+$$;
+
+revoke all on function add_clients from public;
+grant execute on function add_clients to authenticated;
+
+create function update_client_record(p_client uuid, p_name text, p_whatsapp text) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  if current_professional_id() is null then
+    raise exception 'Sem permissão' using errcode = 'P0001';
+  end if;
+
+  update clients
+  set name = trim(p_name), whatsapp = p_whatsapp
+  where id = p_client and user_id is null and serves_client(id);
+
+  if not found then
+    raise exception 'Não foi possível editar esta cliente' using errcode = 'P0001';
+  end if;
+end;
+$$;
+
+revoke all on function update_client_record from public;
+grant execute on function update_client_record to authenticated;
