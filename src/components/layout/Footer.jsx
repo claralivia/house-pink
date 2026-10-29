@@ -9,7 +9,10 @@ export default function Footer() {
           © {new Date().getFullYear()} {SALON.name}. Todos os direitos reservados.
         </p>
         <p>
-          Desenvolvido por <b>{DEVELOPER}</b> · <Link to="/entrar">Entrar</Link>
+          <Link to="/ajuda">Precisa de ajuda?</Link> · <Link to="/entrar">Entrar</Link>
+        </p>
+        <p>
+          Desenvolvido por <b>{DEVELOPER}</b>
         </p>
       </div>
     </footer>
