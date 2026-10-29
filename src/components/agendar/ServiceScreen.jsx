@@ -11,7 +11,7 @@ const lowestPrice = (types) => {
 
 const shortestDuration = (types) => Math.min(...types.map((type) => type.duration_minutes))
 
-export default function ServiceScreen({ catalog, onPick }) {
+export default function ServiceScreen({ catalog, signedIn, onPick }) {
   return (
     <>
       <p className="app-step">Passo 1 de 4</p>
@@ -38,7 +38,7 @@ export default function ServiceScreen({ catalog, onPick }) {
                   </span>
                 </span>
                 <span className="app-item-end">
-                  <PriceTag cents={lowestPrice(service.service_types)} from />
+                  <PriceTag cents={lowestPrice(service.service_types)} from signedIn={signedIn} />
                   <Icon name="chevron-right" />
                 </span>
               </button>

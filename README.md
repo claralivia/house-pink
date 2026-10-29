@@ -79,7 +79,7 @@ src/
 └── pages/               Home, Agendar, Entrar e Painel
 supabase/
 ├── schema.sql           tabelas, regras de segurança e funções
-└── seed.sql             profissionais, serviços, horários e preços de exemplo
+└── seed.sql             profissionais, serviços, horários (terça a sábado, 9h30 às 17h30) e preços da Bruna; a Herlany ainda não tem preços
 ```
 
 ## Banco de dados
@@ -87,7 +87,7 @@ supabase/
 O esquema fica em `supabase/schema.sql` e deve ser rodado no SQL Editor do Supabase, seguido de `supabase/seed.sql`.
 
 - Cada profissional tem a própria agenda: o banco impede dois agendamentos sobrepostos para a mesma profissional, e a sessão conjunta roda em paralelo.
-- Os preços ficam em `service_prices`, legível só por quem está logado. Os preços do `seed.sql` são de exemplo.
+- Os preços ficam em `service_prices`, legível só por quem está logado. Os preços da Bruna vêm da tabela dela; os da Herlany ainda não foram cadastrados e aparecem como "Valor a combinar" para quem está logada.
 - A cliente agenda pela função `create_appointment`, que confere janela de dias, folgas e expediente. Os horários ocupados saem por `busy_slots`, sem dados de clientes.
 - Cada profissional enxerga só a própria agenda e a própria receita, e é reconhecida pelo vínculo da conta (`professionals.user_id`).
 - Ao criar uma conta, um gatilho cria o perfil da cliente (`clients`), que passa a ser usado nos agendamentos feitos logada.
@@ -101,7 +101,7 @@ Tudo o que é dado do salão fica em `src/data`:
 
 ## Fotos
 
-As fotos de unhas, cílios e sobrancelhas são provisórias, do [Unsplash](https://unsplash.com/license) (uso comercial livre): `hvqHtZqNMeI`, `hxp1rPHSUzI` e `2IK78QZhkfo`. Troque pelas fotos do trabalho das duas em `public/img/`.
+A foto das duas e a das unhas são do salão (`duo.jpg`, `unhas.jpg`). As de cílios e sobrancelhas ainda são provisórias, do [Unsplash](https://unsplash.com/license) (uso comercial livre): `hxp1rPHSUzI` e `2IK78QZhkfo`. Troque pelas fotos de trabalho da Herlany em `public/img/`.
 
 ## Protótipo Online (Deploy Vercel)
 

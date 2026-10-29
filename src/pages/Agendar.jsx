@@ -24,6 +24,7 @@ export default function Agendar() {
   const account = useAccount()
   const userId = account.session?.user.id
   const loadClient = useCallback(() => fetchMyClient(userId), [userId])
+  const signedIn = Boolean(account.session)
   const myClient = useAsync(loadClient, account.role === 'client' ? userId : null)
   const [step, setStep] = useState('service')
   const [choice, setChoice] = useState(null)
@@ -83,9 +84,12 @@ export default function Agendar() {
   }
 
   const screens = {
-    service: catalog.data ? <ServiceScreen catalog={catalog.data} onPick={pickService} /> : null,
+    service: catalog.data ? (
+      <ServiceScreen catalog={catalog.data} signedIn={signedIn} onPick={pickService} />
+    ) : null,
     type: choice ? (
       <TypeScreen
+        signedIn={signedIn}
         choice={choice}
         onBack={() => setStep('service')}
         onPick={pickType}
