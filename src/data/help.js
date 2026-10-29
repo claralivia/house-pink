@@ -86,6 +86,7 @@ export const PRO_MODULES = [
           'Toque em “Cadastrar cliente”.',
           'Digite o nome e o WhatsApp com DDD e toque em salvar.',
           'Para achar alguém depois, escreva o nome ou o número em “Procurar cliente”.',
+          'Cadastrou uma cliente por engano? Toque no nome dela e em “Tirar da minha lista”. Se ela já tiver horários com você, o app avisa quantos são e só apaga tudo se você confirmar de novo.',
         ],
       },
       {
