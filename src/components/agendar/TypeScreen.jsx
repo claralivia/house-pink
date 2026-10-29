@@ -24,6 +24,7 @@ export default function TypeScreen({ choice, signedIn, onBack, onPick, onNext })
             className={`app-item${type?.id === option.id ? ' on' : ''}`}
             onClick={() => onPick(option)}
           >
+            {option.image_url ? <img className="app-thumb" src={option.image_url} alt="" /> : null}
             <span>
               <span className="app-item-name">{option.name}</span>
               <span className="app-item-meta">{formatDuration(option.duration_minutes)}</span>

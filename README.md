@@ -18,7 +18,7 @@ Site e sistema de agendamento do **House Pink Nails & Lashes**, salão em Fortal
 - **Entrar (`/entrar`)** — login único com e-mail e senha: quem é profissional abre a agenda (`/painel`) e quem é cliente abre a conta (`/conta`).
 - **Criar conta (`/cadastro`)** — cadastro da cliente, que passa a ver os valores e a acompanhar os seus horários.
 - **Minha conta (`/conta`)** — horários da cliente (próximos e anteriores) e perfil.
-- **Agenda (`/painel`)** — agenda da profissional, com confirmar, concluir e cancelar horários.
+- **Agenda (`/painel`)** — da profissional: agenda (confirmar, concluir com a forma de pagamento e cancelar), ganhos do mês com filtro por Pix, cartão e dinheiro, e fotos dos serviços.
 
 Os valores dos serviços não aparecem em nenhuma página pública.
 

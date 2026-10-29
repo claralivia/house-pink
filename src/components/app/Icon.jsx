@@ -44,6 +44,13 @@ const SHAPES = {
       <path d="M4 10h16M8.5 3.5v4M15.5 3.5v4" />
     </>
   ),
+  wallet: (
+    <>
+      <rect x="3.5" y="6.5" width="17" height="12" rx="3" />
+      <path d="M3.5 10.5h17M16.5 14.5h.01" />
+    </>
+  ),
+  list: <path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01" />,
   user: (
     <>
       <circle cx="12" cy="8.5" r="3.5" />

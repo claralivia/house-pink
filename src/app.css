@@ -716,3 +716,66 @@
   margin-top: var(--space-1);
   max-width: 34ch;
 }
+.app-thumb {
+  display: block;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+}
+.app-thumb.empty {
+  display: grid;
+  place-items: center;
+  background: var(--surface-sunken);
+  color: var(--ink-muted);
+  font-size: 12px;
+  text-align: center;
+}
+.app-item:has(.app-thumb) {
+  grid-template-columns: auto 1fr auto;
+  column-gap: var(--space-3);
+}
+.app-row.app-photo-row {
+  grid-template-columns: 64px 1fr;
+  align-items: center;
+}
+.app-row.app-photo-row .app-upload {
+  grid-column: 1 / -1;
+  margin-top: var(--space-2);
+  cursor: pointer;
+}
+.app-month {
+  margin-top: var(--space-3);
+}
+.app-total {
+  display: grid;
+  gap: 2px;
+  margin-top: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-menu);
+}
+.app-total strong {
+  font:
+    700 36px/42px 'Syne',
+    sans-serif;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.app-methods {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+.app-methods .app-slot {
+  padding: 0;
+  font-size: 14px;
+}
+.app-split {
+  padding: var(--space-3) var(--space-4);
+}
+.app-full {
+  flex-basis: 100%;
+}

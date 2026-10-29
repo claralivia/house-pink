@@ -20,7 +20,7 @@ export const fetchCatalog = async () =>
     await supabase
       .from('professionals')
       .select(
-        'id, key, name, booking_window_days, deposit_cents, booking_notes, services(id, name, position, service_types(id, name, description, duration_minutes, position, service_prices(price_cents)))',
+        'id, key, name, booking_window_days, deposit_cents, booking_notes, services(id, name, position, service_types(id, name, description, image_url, duration_minutes, position, service_prices(price_cents)))',
       )
       .eq('services.active', true)
       .eq('services.service_types.active', true)
@@ -129,3 +129,37 @@ export const bookingErrorMessage = ({ code, message }) =>
     [CONFLICT_CODE]: 'Esse horário acabou de ser reservado. Escolha outro, por favor.',
     [RULE_CODE]: message,
   })[code] ?? 'Não foi possível concluir o agendamento. Tente novamente em instantes.'
+
+export const setAppointmentPayment = async (id, payment) =>
+  unwrap(await supabase.from('appointments').update({ payment, status: 'done' }).eq('id', id))
+
+export const fetchEarnings = async (professionalId, from, to) =>
+  unwrap(
+    await supabase
+      .from('appointments')
+      .select('id, starts_at, price_cents, payment, clients(name), service_types(name)')
+      .eq('professional_id', professionalId)
+      .eq('status', 'done')
+      .gte('starts_at', from)
+      .lt('starts_at', to)
+      .order('starts_at', { ascending: false }),
+  )
+
+export const fetchOwnTypes = async (professionalId) =>
+  unwrap(
+    await supabase
+      .from('service_types')
+      .select('id, name, image_url, services!inner(name, position, professional_id)')
+      .eq('services.professional_id', professionalId)
+      .order('position'),
+  )
+
+export const uploadTypePhoto = async (typeId, file) => {
+  const extension = file.name.split('.').pop().toLowerCase()
+  const path = `${typeId}-${Date.now()}.${extension}`
+  unwrap(await supabase.storage.from('service-photos').upload(path, file, { upsert: true }))
+  const { data } = supabase.storage.from('service-photos').getPublicUrl(path)
+  unwrap(
+    await supabase.from('service_types').update({ image_url: data.publicUrl }).eq('id', typeId),
+  )
+}

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { timeOf } from '../../lib/dates.js'
 import { whatsappUrl } from '../../lib/links.js'
 import { formatPrice } from '../../lib/money.js'
@@ -16,12 +17,19 @@ const NEXT_ACTIONS = {
   confirmed: [{ label: 'Concluir', status: 'done' }],
 }
 
+const PAYMENTS = [
+  { id: 'pix', label: 'Pix' },
+  { id: 'card', label: 'Cartão' },
+  { id: 'cash', label: 'Dinheiro' },
+]
+
 const CANCEL = { label: 'Cancelar horário', status: 'cancelled' }
 
 const reminder = ({ clients, starts_at }) =>
   `Oi, ${clients.name}! Aqui é da House Pink, sobre o seu horário das ${timeOf(starts_at)}.`
 
-export default function AppointmentRow({ appointment, pro, onStatus }) {
+export default function AppointmentRow({ appointment, pro, onStatus, onPay }) {
+  const [paying, setPaying] = useState(false)
   const { id, starts_at, ends_at, status, price_cents, clients, service_types } = appointment
   const { label, icon, tone } = STATUS[status]
   const actions = NEXT_ACTIONS[status] ? [...NEXT_ACTIONS[status], CANCEL] : []
@@ -46,12 +54,25 @@ export default function AppointmentRow({ appointment, pro, onStatus }) {
           {label}
         </span>
       </div>
+      {paying ? (
+        <div className="app-row-actions">
+          <p className="app-help app-full">Como foi o pagamento?</p>
+          {PAYMENTS.map(({ id: method, label: text }) => (
+            <AppButton key={method} variant="secondary" onClick={() => onPay(id, method)}>
+              {text}
+            </AppButton>
+          ))}
+          <AppButton variant="ghost" onClick={() => onStatus(id, 'done')}>
+            Sem pagamento
+          </AppButton>
+        </div>
+      ) : null}
       <div className="app-row-actions">
         {actions.map(({ label: text, status: next }) => (
           <AppButton
             key={next}
             variant={next === 'cancelled' ? 'ghost' : 'secondary'}
-            onClick={() => onStatus(id, next)}
+            onClick={() => (next === 'done' ? setPaying(true) : onStatus(id, next))}
           >
             {text}
           </AppButton>
