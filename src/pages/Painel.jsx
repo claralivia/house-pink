@@ -16,6 +16,7 @@ import { useAsync } from '../hooks/useAsync.js'
 import { usePageTitle } from '../hooks/usePageTitle.js'
 import { dateOf, todayIso } from '../lib/dates.js'
 import {
+  deleteAppointment,
   fetchAgenda,
   setAppointmentPayment,
   setAppointmentStatus,
@@ -69,6 +70,16 @@ export default function Painel() {
     agenda.reload()
   }
 
+  const reopen = async (id) => {
+    await updateAppointment(id, { status: 'confirmed', payment: null })
+    agenda.reload()
+  }
+
+  const remove = async (id) => {
+    await deleteAppointment(id)
+    agenda.reload()
+  }
+
   const deposit = async (id, method) => {
     await updateAppointment(id, {
       deposit_paid_cents: professional.deposit_cents,
@@ -101,6 +112,8 @@ export default function Painel() {
         onStatus={changeStatus}
         onPay={pay}
         onDeposit={deposit}
+        onReopen={reopen}
+        onDelete={remove}
         onChanged={agenda.reload}
       />
     )

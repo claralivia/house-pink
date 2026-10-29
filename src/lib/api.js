@@ -270,6 +270,15 @@ export const addType = async (serviceId, { name, duration_minutes, price_cents }
   await savePrice(created.id, price_cents)
 }
 
+const deleteRow = async (table, id) => {
+  const rows = unwrap(await supabase.from(table).delete().eq('id', id).select('id'))
+  if (!rows.length) throw new Error('Nada foi apagado')
+}
+
+export const deleteAppointment = (id) => deleteRow('appointments', id)
+
+export const deleteType = (id) => deleteRow('service_types', id)
+
 export const updateAppointment = async (id, patch) =>
   unwrap(await supabase.from('appointments').update(patch).eq('id', id))
 

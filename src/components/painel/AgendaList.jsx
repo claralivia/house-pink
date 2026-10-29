@@ -27,7 +27,16 @@ const MODES = [
 
 const plural = (count, one, many) => `${count} ${count === 1 ? one : many}`
 
-export default function AgendaList({ appointments, pro, onStatus, onPay, onDeposit, onChanged }) {
+export default function AgendaList({
+  appointments,
+  pro,
+  onStatus,
+  onPay,
+  onDeposit,
+  onReopen,
+  onDelete,
+  onChanged,
+}) {
   const today = todayIso()
   const [mode, setMode] = useState('day')
   const [selected, setSelected] = useState(today)
@@ -163,6 +172,8 @@ export default function AgendaList({ appointments, pro, onStatus, onPay, onDepos
           onStatus={onStatus}
           onPay={onPay}
           onDeposit={onDeposit}
+          onReopen={onReopen}
+          onDelete={onDelete}
           onChanged={onChanged}
           onClose={() => setOpenId(null)}
         />

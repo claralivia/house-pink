@@ -1,6 +1,13 @@
 import { useCallback, useState } from 'react'
 import { useAsync } from '../../hooks/useAsync.js'
-import { addType, fetchOwnTypes, savePrice, updateType, uploadTypePhoto } from '../../lib/api.js'
+import {
+  addType,
+  deleteType,
+  fetchOwnTypes,
+  savePrice,
+  updateType,
+  uploadTypePhoto,
+} from '../../lib/api.js'
 import { formatDuration } from '../../lib/dates.js'
 import { formatPrice, toCents, toReais } from '../../lib/money.js'
 import AppButton from '../app/AppButton.jsx'
@@ -114,6 +121,50 @@ function TypeEditor({ type, onSaved }) {
   )
 }
 
+const FK_VIOLATION = '23503'
+
+function DeleteType({ type, onDeleted }) {
+  const [step, setStep] = useState('idle')
+
+  const remove = async () => {
+    try {
+      await deleteType(type.id)
+      onDeleted()
+    } catch (error) {
+      setStep(error.code === FK_VIOLATION ? 'used' : 'failed')
+    }
+  }
+
+  if (step === 'used')
+    return (
+      <Notice tone="warning" title="Esse serviço já tem horários na agenda">
+        Para não perder o histórico e os ganhos, ele não pode ser excluído. Desmarque “Disponível
+        para agendar” e toque em Salvar: ele some do site.
+      </Notice>
+    )
+
+  if (step === 'confirm' || step === 'failed')
+    return (
+      <div className="app-actions">
+        <p className="app-modal-question">Excluir “{type.name}”?</p>
+        <p className="app-help">Ele some do site e da sua lista. Não dá para desfazer.</p>
+        {step === 'failed' ? <Notice tone="danger" title="Não foi possível excluir" /> : null}
+        <AppButton variant="danger" full onClick={remove}>
+          Sim, excluir
+        </AppButton>
+        <AppButton variant="secondary" full onClick={() => setStep('idle')}>
+          Não, manter
+        </AppButton>
+      </div>
+    )
+
+  return (
+    <AppButton variant="ghost" full onClick={() => setStep('confirm')}>
+      Excluir este serviço
+    </AppButton>
+  )
+}
+
 function TypeRow({ type, onSaved }) {
   const cents = priceOf(type)
 
@@ -139,6 +190,7 @@ function TypeRow({ type, onSaved }) {
         <div className="app-type-body">
           <PhotoButton type={type} onUploaded={onSaved} />
           <TypeEditor type={type} onSaved={onSaved} />
+          <DeleteType type={type} onDeleted={onSaved} />
         </div>
       </details>
     </li>

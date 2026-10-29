@@ -6,6 +6,7 @@ import { formatPrice } from '../../lib/money.js'
 import AppButton from '../app/AppButton.jsx'
 import Avatar from '../app/Avatar.jsx'
 import Modal from '../app/Modal.jsx'
+import Notice from '../app/Notice.jsx'
 import EditAppointment from './EditAppointment.jsx'
 
 const STATUS_TEXT = {
@@ -33,20 +34,30 @@ export default function AppointmentSheet({
   onStatus,
   onPay,
   onDeposit,
+  onReopen,
+  onDelete,
   onChanged,
   onClose,
 }) {
   const [view, setView] = useState('main')
+  const [failed, setFailed] = useState(false)
   const { id, starts_at, ends_at, status, price_cents, deposit_paid_cents, deposit_payment } =
     appointment
   const { clients, service_types: type } = appointment
   const open = status === 'pending' || status === 'confirmed'
   const canDeposit = open && pro.deposit_cents > 0 && deposit_paid_cents === 0
-  const back = () => setView('main')
+  const back = () => {
+    setFailed(false)
+    setView('main')
+  }
 
   const run = (action) => async () => {
-    await action()
-    onClose()
+    try {
+      await action()
+      onClose()
+    } catch {
+      setFailed(true)
+    }
   }
 
   const methods = (onPick) =>
@@ -105,7 +116,14 @@ export default function AppointmentSheet({
                 Cancelar este horário
               </AppButton>
             </>
-          ) : null}
+          ) : (
+            <AppButton variant="secondary" full onClick={run(() => onReopen(id))}>
+              {status === 'done' ? 'Desfazer: voltar para confirmado' : 'Reativar este horário'}
+            </AppButton>
+          )}
+          <AppButton variant="ghost" full onClick={() => setView('delete')}>
+            Apagar este registro
+          </AppButton>
         </div>
       ) : null}
 
@@ -139,6 +157,27 @@ export default function AppointmentSheet({
             Não, manter o horário
           </AppButton>
         </Choices>
+      ) : null}
+
+      {view === 'delete' ? (
+        <Choices question={`Apagar o registro de ${clients.name}?`}>
+          <p className="app-help">
+            Ele some da agenda, dos ganhos e do histórico da cliente, junto com a avaliação, se
+            houver. Não dá para desfazer. Use isto só se você cadastrou por engano.
+          </p>
+          <AppButton variant="danger" full onClick={run(() => onDelete(id))}>
+            Sim, apagar
+          </AppButton>
+          <AppButton variant="secondary" full onClick={back}>
+            Não, manter
+          </AppButton>
+        </Choices>
+      ) : null}
+
+      {failed ? (
+        <Notice tone="danger" title="Não foi possível fazer isso">
+          Se for reativar, confira se o horário não foi ocupado por outra cliente.
+        </Notice>
       ) : null}
 
       {view === 'edit' ? (
