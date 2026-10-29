@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import AppButton from '../components/app/AppButton.jsx'
-import AppShell from '../components/app/AppShell.jsx'
+import AuthLayout from '../components/app/AuthLayout.jsx'
 import Field from '../components/app/Field.jsx'
 import Notice from '../components/app/Notice.jsx'
 import { PAGE_TITLES } from '../data/site.js'
@@ -29,9 +29,10 @@ export default function Recuperar() {
   }
 
   return (
-    <AppShell hideAccount credit>
-      <h1 className="app-headline">Esqueci a senha</h1>
-      <p className="app-lead">Digite o seu e-mail e enviamos um link para criar uma senha nova.</p>
+    <AuthLayout
+      title="Esqueci a senha"
+      lead="Digite o seu e-mail e enviamos um link para criar uma senha nova."
+    >
       <form onSubmit={submit}>
         <Field
           label="E-mail"
@@ -55,9 +56,9 @@ export default function Recuperar() {
           {sending ? 'Enviando...' : 'Enviar link'}
         </AppButton>
       </form>
-      <Link className="app-back" to="/entrar" style={{ marginTop: 8 }}>
-        Voltar para entrar
-      </Link>
-    </AppShell>
+      <p className="auth-switch">
+        Lembrou a senha? <Link to="/entrar">Entrar</Link>
+      </p>
+    </AuthLayout>
   )
 }

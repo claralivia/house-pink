@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AppButton from '../components/app/AppButton.jsx'
-import AppShell from '../components/app/AppShell.jsx'
+import AuthLayout from '../components/app/AuthLayout.jsx'
 import Field from '../components/app/Field.jsx'
 import Notice from '../components/app/Notice.jsx'
 import { PAGE_TITLES } from '../data/site.js'
@@ -46,11 +46,10 @@ export default function Cadastro() {
   }
 
   return (
-    <AppShell hideAccount credit>
-      <h1 className="app-headline">Criar conta</h1>
-      <p className="app-lead">
-        Para ver os valores e acompanhar os seus horários. Agendar continua sem precisar de conta.
-      </p>
+    <AuthLayout
+      title="Criar conta"
+      lead="Para ver os valores e acompanhar os seus horários. Agendar continua sem precisar de conta."
+    >
       {pendingEmail ? (
         <Notice tone="success" title="Confirme o seu e-mail">
           Enviamos um link para {pendingEmail}. Abra o e-mail e toque no link para ativar a conta.
@@ -104,9 +103,9 @@ export default function Cadastro() {
           </AppButton>
         </form>
       )}
-      <Link className="app-back" to="/entrar" style={{ marginTop: 8 }}>
-        Já tenho conta
-      </Link>
-    </AppShell>
+      <p className="auth-switch">
+        Já tem conta? <Link to="/entrar">Entrar</Link>
+      </p>
+    </AuthLayout>
   )
 }

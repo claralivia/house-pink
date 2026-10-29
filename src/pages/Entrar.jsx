@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import AppButton from '../components/app/AppButton.jsx'
-import AppShell from '../components/app/AppShell.jsx'
+import AuthLayout from '../components/app/AuthLayout.jsx'
 import Field from '../components/app/Field.jsx'
 import Notice from '../components/app/Notice.jsx'
 import { PAGE_TITLES } from '../data/site.js'
@@ -14,6 +14,7 @@ export default function Entrar() {
   usePageTitle(PAGE_TITLES.entrar)
 
   const navigate = useNavigate()
+  const [params] = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [sending, setSending] = useState(false)
@@ -25,7 +26,10 @@ export default function Entrar() {
     setFailed(false)
     try {
       await signIn(email.trim(), password)
-      navigate(homeFor(await fetchMyProfessional()))
+      const professional = await fetchMyProfessional()
+      navigate(
+        !professional && params.get('volta') === 'agendar' ? '/agendar' : homeFor(professional),
+      )
     } catch {
       setFailed(true)
       setSending(false)
@@ -33,11 +37,10 @@ export default function Entrar() {
   }
 
   return (
-    <AppShell hideAccount credit>
-      <h1 className="app-headline">Entrar</h1>
-      <p className="app-lead">
-        Clientes e profissionais entram por aqui, com o mesmo e-mail e senha.
-      </p>
+    <AuthLayout
+      title="Entrar"
+      lead="Clientes e profissionais entram por aqui, com o mesmo e-mail e senha."
+    >
       <form onSubmit={submit}>
         <Field
           label="E-mail"
@@ -63,20 +66,16 @@ export default function Entrar() {
         <AppButton full type="submit" disabled={sending} style={{ marginTop: 24 }}>
           {sending ? 'Entrando...' : 'Entrar'}
         </AppButton>
+        <p className="auth-form-extra">
+          <Link to="/recuperar">Esqueci a senha</Link>
+        </p>
       </form>
-      <Link className="app-back" to="/recuperar">
-        Esqueci a senha
-      </Link>
-      <h2 className="app-title">Ainda não tem conta?</h2>
-      <p className="app-lead">
-        Com conta, você vê os valores dos serviços e acompanha os seus horários.
+      <p className="auth-switch">
+        Ainda não tem conta? <Link to="/cadastro">Criar conta</Link>
+        <span className="app-help" style={{ display: 'block' }}>
+          Com conta, você vê os valores dos serviços e acompanha os seus horários.
+        </span>
       </p>
-      <Link className="app-btn secondary full" to="/cadastro" style={{ marginTop: 16 }}>
-        Criar conta
-      </Link>
-      <Link className="app-back" to="/" style={{ marginTop: 8 }}>
-        Voltar para o site
-      </Link>
-    </AppShell>
+    </AuthLayout>
   )
 }

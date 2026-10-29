@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AppButton from '../components/app/AppButton.jsx'
-import AppShell from '../components/app/AppShell.jsx'
+import AuthLayout from '../components/app/AuthLayout.jsx'
 import Field from '../components/app/Field.jsx'
 import Notice from '../components/app/Notice.jsx'
 import { PAGE_TITLES } from '../data/site.js'
@@ -36,8 +36,7 @@ export default function RedefinirSenha() {
   }
 
   return (
-    <AppShell hideAccount credit>
-      <h1 className="app-headline">Senha nova</h1>
+    <AuthLayout title="Senha nova">
       {loading ? <p className="app-lead">Carregando...</p> : null}
       {!loading && !session ? (
         <>
@@ -71,6 +70,6 @@ export default function RedefinirSenha() {
           </AppButton>
         </form>
       ) : null}
-    </AppShell>
+    </AuthLayout>
   )
 }
