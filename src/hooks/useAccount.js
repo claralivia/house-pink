@@ -1,5 +1,4 @@
 import { useCallback } from 'react'
-import { PROS } from '../data/site.js'
 import { fetchMyClient, fetchMyProfessional } from '../lib/api.js'
 import { useAsync } from './useAsync.js'
 import { useSession } from './useSession.js'
@@ -8,9 +7,13 @@ const roleOf = (professional) => (professional ? 'pro' : 'client')
 const firstOf = (name) => name?.trim().split(/\s+/)[0] || null
 
 const personOf = (professional, client) => {
-  const pro = professional && PROS[professional.key]
-  return pro
-    ? { name: pro.name, first: pro.first, photo: professional.photo, isPro: true }
+  return professional
+    ? {
+        name: professional.name,
+        first: firstOf(professional.name),
+        photo: professional.photo ?? null,
+        isPro: true,
+      }
     : { name: client?.name ?? '', first: firstOf(client?.name), photo: client?.photo_url ?? null }
 }
 

@@ -17,7 +17,7 @@ const toBusy = ({ starts_at, ends_at }) => ({
 
 // Foto, apresentação e Instagram editados pela profissional vencem os padrões do site.
 const withProfile = (pro) => {
-  const base = PROS[pro.key]
+  const base = PROS[pro.key] ?? {}
   return {
     ...base,
     ...pro,
@@ -29,9 +29,9 @@ const withProfile = (pro) => {
 
 export const fetchTeam = async () =>
   Object.fromEntries(
-    unwrap(await supabase.from('professionals').select('key, bio, photo_url, instagram')).map(
-      (pro) => [pro.key, withProfile(pro)],
-    ),
+    unwrap(await supabase.from('professionals').select('key, bio, photo_url, instagram'))
+      .filter((pro) => PROS[pro.key])
+      .map((pro) => [pro.key, withProfile(pro)]),
   )
 
 export const fetchCatalog = async () =>
@@ -46,7 +46,9 @@ export const fetchCatalog = async () =>
       .order('name')
       .order('position', { referencedTable: 'services' })
       .order('position', { referencedTable: 'services.service_types' }),
-  ).map(withProfile)
+  )
+    .filter((pro) => PROS[pro.key])
+    .map(withProfile)
 
 export const fetchAvailability = async ({ id, booking_window_days }) => {
   const today = todayIso()
