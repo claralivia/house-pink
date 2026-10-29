@@ -1,16 +1,16 @@
 .app {
-  --bg: #f8f3ef;
+  --bg: #f5f5f3;
   --surface: #ffffff;
-  --surface-sunken: #efe3dd;
+  --surface-sunken: #e8e8e5;
   --ink: #141012;
   --ink-muted: #5f565b;
   --brand: #141012;
   --brand-hover: #c4006a;
   --on-brand: #ffffff;
-  --brand-soft: #fce6f0;
+  --brand-soft: #ececea;
   --brand-ink: #141012;
   --brand-bright: #ff0088;
-  --border: #e6d8d0;
+  --border: #dcdcd8;
   --border-control: #8a7a80;
   --focus: var(--brand-bright);
   --cat-nails-ink: #141012;

@@ -10,8 +10,8 @@ body {
   --pink: #ff0088;
   --pink-soft: #ff63b3;
   --ink: #141012;
-  --cream: #f8f3ef;
-  --nude: #efe3dd;
+  --cream: #f5f5f3;
+  --nude: #e8e8e5;
   --muted: #5f565b;
   min-height: 100vh;
   position: relative;
@@ -663,7 +663,7 @@ body {
   position: relative;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: #e9e1dc;
+  background: #e4e4e1;
 }
 .ph.arch {
   border-radius: 190px 190px 0 0;
