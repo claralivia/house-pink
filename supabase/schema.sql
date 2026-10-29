@@ -10,6 +10,8 @@ create table professionals (
   key text not null unique,
   name text not null,
   booking_window_days integer not null default 15 check (booking_window_days >= 0),
+  deposit_cents integer check (deposit_cents >= 0),
+  booking_notes text[] not null default '{}',
   created_at timestamptz not null default now()
 );
 
@@ -26,6 +28,7 @@ create table service_types (
   service_id uuid not null references services (id) on delete cascade,
   name text not null,
   duration_minutes integer not null check (duration_minutes > 0),
+  description text,
   active boolean not null default true,
   position integer not null default 0
 );
