@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PROS } from '../../data/site.js'
+import { useTeam } from '../../hooks/useTeam.js'
 import { dateOf, longDate, timeOf } from '../../lib/dates.js'
 import { whatsappUrl } from '../../lib/links.js'
 import AppButton from '../app/AppButton.jsx'
@@ -12,7 +12,7 @@ export default function NextAppointment({ appointment, onCancel }) {
   const [view, setView] = useState('main')
   const { starts_at, status, service_types: type } = appointment
   const professional = type.services.professionals
-  const pro = PROS[professional.key]
+  const pro = useTeam()[professional.key]
   const rules = professional.booking_notes ?? []
   const confirmed = status === 'confirmed'
 

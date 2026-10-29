@@ -10,7 +10,7 @@ const firstOf = (name) => name?.trim().split(/\s+/)[0] || null
 const personOf = (professional, client) => {
   const pro = professional && PROS[professional.key]
   return pro
-    ? { name: pro.name, first: pro.first, photo: pro.photo, isPro: true }
+    ? { name: pro.name, first: pro.first, photo: professional.photo, isPro: true }
     : { name: client?.name ?? '', first: firstOf(client?.name), photo: client?.photo_url ?? null }
 }
 

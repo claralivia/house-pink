@@ -3,6 +3,7 @@ import { lastWorth, split } from '../../lib/clientAppointments.js'
 import AppButton from '../app/AppButton.jsx'
 import AppointmentLine from './AppointmentLine.jsx'
 import NextAppointment from './NextAppointment.jsx'
+import ProfessionalsFeed from './ProfessionalsFeed.jsx'
 
 export default function ClientHome({ appointments, onCancel, onReview }) {
   const { upcoming, past } = split(appointments)
@@ -59,6 +60,8 @@ export default function ClientHome({ appointments, onCancel, onReview }) {
           </ul>
         </section>
       ) : null}
+
+      <ProfessionalsFeed />
     </>
   )
 }

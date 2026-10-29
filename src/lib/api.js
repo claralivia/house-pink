@@ -15,19 +15,38 @@ const toBusy = ({ starts_at, ends_at }) => ({
   end: Date.parse(ends_at),
 })
 
+// Foto, apresentação e Instagram editados pela profissional vencem os padrões do site.
+const withProfile = (pro) => {
+  const base = PROS[pro.key]
+  return {
+    ...base,
+    ...pro,
+    photo: pro.photo_url ?? base.photo,
+    bio: pro.bio ?? base.bio,
+    instagram: pro.instagram ?? base.instagram,
+  }
+}
+
+export const fetchTeam = async () =>
+  Object.fromEntries(
+    unwrap(await supabase.from('professionals').select('key, bio, photo_url, instagram')).map(
+      (pro) => [pro.key, withProfile(pro)],
+    ),
+  )
+
 export const fetchCatalog = async () =>
   unwrap(
     await supabase
       .from('professionals')
       .select(
-        'id, key, name, booking_window_days, deposit_cents, booking_notes, services(id, name, position, service_types(id, name, description, image_url, duration_minutes, position, service_prices(price_cents)))',
+        'id, key, name, bio, photo_url, instagram, booking_window_days, deposit_cents, booking_notes, services(id, name, position, service_types(id, name, description, image_url, duration_minutes, position, service_prices(price_cents)))',
       )
       .eq('services.active', true)
       .eq('services.service_types.active', true)
       .order('name')
       .order('position', { referencedTable: 'services' })
       .order('position', { referencedTable: 'services.service_types' }),
-  ).map((pro) => ({ ...PROS[pro.key], ...pro }))
+  ).map(withProfile)
 
 export const fetchAvailability = async ({ id, booking_window_days }) => {
   const today = todayIso()
@@ -109,12 +128,16 @@ export const signOut = async () => unwrap(await supabase.auth.signOut())
 export const fetchMyProfessional = async () => {
   const id = unwrap(await supabase.rpc('current_professional_id'))
   return id
-    ? unwrap(
-        await supabase
-          .from('professionals')
-          .select('id, key, name, booking_window_days, deposit_cents, booking_notes')
-          .eq('id', id)
-          .single(),
+    ? withProfile(
+        unwrap(
+          await supabase
+            .from('professionals')
+            .select(
+              'id, key, name, bio, photo_url, instagram, booking_window_days, deposit_cents, booking_notes',
+            )
+            .eq('id', id)
+            .single(),
+        ),
       )
     : null
 }
@@ -274,6 +297,14 @@ export const uploadClientPhoto = async (userId, clientId, file) => {
   unwrap(await supabase.storage.from('profile-photos').upload(path, file))
   const { data } = supabase.storage.from('profile-photos').getPublicUrl(path)
   unwrap(await supabase.from('clients').update({ photo_url: data.publicUrl }).eq('id', clientId))
+}
+
+export const uploadProfessionalPhoto = async (userId, professionalId, file) => {
+  const extension = file.name.split('.').pop().toLowerCase()
+  const path = `${userId}/pro-${Date.now()}.${extension}`
+  unwrap(await supabase.storage.from('profile-photos').upload(path, file))
+  const { data } = supabase.storage.from('profile-photos').getPublicUrl(path)
+  await updateProfessional(professionalId, { photo_url: data.publicUrl })
 }
 
 export const fetchKnownClients = async () =>

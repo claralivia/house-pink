@@ -1,9 +1,11 @@
-import { PROS } from '../../data/site.js'
+import { useTeam } from '../../hooks/useTeam.js'
 import { instagramUrl, whatsappUrl } from '../../lib/links.js'
 import Button from '../ui/Button.jsx'
 import SectionHeading from '../ui/SectionHeading.jsx'
 
 export default function Team() {
+  const team = useTeam()
+
   return (
     <section className="wrap sec" id="equipe">
       <SectionHeading kicker="Quem cuida de você" title="Conheça as profissionais">
@@ -11,7 +13,7 @@ export default function Team() {
       </SectionHeading>
 
       <div className="team">
-        {Object.values(PROS).map((pro) => (
+        {Object.values(team).map((pro) => (
           <article key={pro.key} className="member">
             <span className="member-photo">
               <img src={pro.photo} alt={`Foto de ${pro.name}`} loading="lazy" />

@@ -1807,3 +1807,58 @@ img.app-avatar.pro {
   color: var(--ink-muted);
   line-height: 22px;
 }
+.app-feed {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+.app-feed-pro {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.app-feed-pro > header {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+.app-feed-pro > header > div {
+  display: grid;
+  min-width: 0;
+}
+.app-feed-link {
+  color: var(--ink-muted);
+  font-size: 14px;
+}
+.app-feed-bio {
+  color: var(--ink-muted);
+  font-size: 15px;
+  line-height: 22px;
+}
+.app-feed-types {
+  display: grid;
+  gap: var(--space-2);
+}
+.app-feed-type {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  color: inherit;
+  text-decoration: none;
+}
+.app-feed-type img {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+}
+.app-feed-type > span {
+  display: grid;
+  min-width: 0;
+}

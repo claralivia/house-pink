@@ -19,7 +19,7 @@ export const PROS = {
     area: 'Unhas de porcelana',
     short: 'Unhas',
     photo: '/img/perfil/bruna.jpg',
-    bio: 'Unhas de porcelana com acabamento impecável: acrílico natural, baby boomer, francesa reversa e manutenção. Atendo de terça a sábado, na Parquelândia. Às segundas, atendo em domicílio, só pelo WhatsApp.',
+    bio: 'Unhas de porcelana com acabamento impecável: acrílico natural, baby boomer, francesa reversa e manutenção. Atendo de terça a sábado, na Parquelândia.',
     instagram: 'brunaitalanails',
     whatsapp: '5585987413005',
   },

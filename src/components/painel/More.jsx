@@ -3,11 +3,13 @@ import { signOut } from '../../lib/api.js'
 import AppButton from '../app/AppButton.jsx'
 import BackButton from '../app/BackButton.jsx'
 import Icon from '../app/Icon.jsx'
+import MyProfile from './MyProfile.jsx'
 import PasswordForm from './PasswordForm.jsx'
 import Reviews from './Reviews.jsx'
 import Settings from './Settings.jsx'
 
 const ITEMS = [
+  { id: 'perfil', title: 'Meu perfil', text: 'Foto, apresentação e Instagram do site' },
   {
     id: 'avaliacoes',
     title: 'Avaliações das clientes',
@@ -23,7 +25,7 @@ const ITEMS = [
 
 const TITLES = Object.fromEntries(ITEMS.map(({ id, title }) => [id, title]))
 
-export default function More({ professional, email, onSaved }) {
+export default function More({ professional, userId, email, onSaved }) {
   const [view, setView] = useState('menu')
 
   return (
@@ -52,6 +54,9 @@ export default function More({ professional, email, onSaved }) {
         </>
       )}
 
+      {view === 'perfil' ? (
+        <MyProfile userId={userId} professional={professional} onSaved={onSaved} />
+      ) : null}
       {view === 'avaliacoes' ? <Reviews professional={professional} /> : null}
       {view === 'ajustes' ? <Settings professional={professional} onSaved={onSaved} /> : null}
       {view === 'conta' ? (

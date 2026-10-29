@@ -521,3 +521,9 @@ $$;
 
 revoke all on function update_client_record from public;
 grant execute on function update_client_record to authenticated;
+
+-- Perfil público da profissional: ela mesma edita foto, apresentação e Instagram.
+alter table professionals add column bio text;
+alter table professionals add column photo_url text;
+alter table professionals add column instagram text;
+grant update (bio, photo_url, instagram) on professionals to authenticated;

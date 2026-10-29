@@ -138,6 +138,7 @@ export default function Painel() {
       {tab === 'mais' && professional ? (
         <More
           professional={professional}
+          userId={account.session?.user.id}
           email={account.session?.user.email}
           onSaved={account.reload}
         />
