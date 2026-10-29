@@ -14,7 +14,13 @@ import { useAccount } from '../hooks/useAccount.js'
 import { useAsync } from '../hooks/useAsync.js'
 import { useCatalog } from '../hooks/useCatalog.js'
 import { usePageTitle } from '../hooks/usePageTitle.js'
-import { bookingErrorMessage, createAppointment, fetchMyClient } from '../lib/api.js'
+import {
+  bookingErrorMessage,
+  createAppointment,
+  createJointAppointment,
+  fetchMyClient,
+} from '../lib/api.js'
+import { joinDays } from '../lib/slots.js'
 import { timestamp } from '../lib/dates.js'
 import { whatsappUrl } from '../lib/links.js'
 
@@ -48,13 +54,28 @@ export default function Agendar() {
   const [booking, setBooking] = useState(null)
   const [guest, setGuest] = useState(false)
 
-  const choice = picked ?? preset
+  const choices = picked ?? (preset ? [preset] : [])
   const step = stepName ?? (preset ? 'when' : 'catalog')
   const needsAccess = !account.loading && !signedIn && !guest && !preset && !booking
-  const availability = useAvailability(choice?.pro, choice?.type.duration_minutes ?? 0)
+  const first = useAvailability(choices[0]?.pro, choices[0]?.type.duration_minutes ?? 0)
+  const second = useAvailability(choices[1]?.pro, choices[1]?.type.duration_minutes ?? 0)
+  const availability = choices[1]
+    ? {
+        days: joinDays(first.days, second.days),
+        error: first.error || second.error,
+        loading: first.loading || second.loading,
+        reload: () => {
+          first.reload()
+          second.reload()
+        },
+      }
+    : first
 
+  // Um serviço por profissional: tocar em outro da mesma troca; tocar no escolhido tira.
   const pick = (next) => {
-    setPicked(next)
+    const rest = choices.filter(({ pro }) => pro.id !== next.pro.id)
+    const already = choices.some(({ type }) => type.id === next.type.id)
+    setPicked(already ? rest : [...rest, next])
     setDate(null)
     setMinutes(null)
   }
@@ -66,7 +87,7 @@ export default function Agendar() {
   }
 
   const restart = () => {
-    setPicked(null)
+    setPicked([])
     setDate(null)
     setMinutes(null)
     setNotice(null)
@@ -77,12 +98,17 @@ export default function Agendar() {
   const submit = async (client) => {
     setSubmitting(true)
     try {
-      await createAppointment({
-        serviceTypeId: choice.type.id,
-        startsAt: timestamp(date, minutes),
-        ...client,
-      })
-      setBooking({ ...choice, date, minutes })
+      const startsAt = timestamp(date, minutes)
+      if (choices.length > 1) {
+        await createJointAppointment({
+          serviceTypeIds: choices.map(({ type }) => type.id),
+          startsAt,
+          ...client,
+        })
+      } else {
+        await createAppointment({ serviceTypeId: choices[0].type.id, startsAt, ...client })
+      }
+      setBooking({ choices, date, minutes })
     } catch (failure) {
       setNotice(bookingErrorMessage(failure))
       setMinutes(null)
@@ -98,14 +124,14 @@ export default function Agendar() {
       <CatalogScreen
         catalog={catalog.data}
         signedIn={signedIn}
-        selected={choice}
+        selected={choices}
         onPick={pick}
         onNext={() => setStepName('when')}
       />
     ) : null,
-    when: choice ? (
+    when: choices.length ? (
       <WhenScreen
-        choice={choice}
+        choices={choices}
         availability={availability}
         date={date}
         minutes={minutes}
@@ -117,9 +143,9 @@ export default function Agendar() {
       />
     ) : null,
     who:
-      choice && minutes !== null ? (
+      choices.length && minutes !== null ? (
         <WhoScreen
-          choice={choice}
+          choices={choices}
           date={date}
           minutes={minutes}
           submitting={submitting}

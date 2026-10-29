@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { sessionMinutes } from '../../lib/booking.js'
 import { formatDuration } from '../../lib/dates.js'
 import AppButton from '../app/AppButton.jsx'
 import BottomBar from '../app/BottomBar.jsx'
@@ -23,6 +24,13 @@ export default function CatalogScreen({ catalog, signedIn, selected, onPick, onN
           : 'Escolha o serviço. Sem criar conta: só o seu nome e o seu WhatsApp.'}
       </p>
 
+      {catalog.length > 1 ? (
+        <p className="app-help">
+          Quer unhas e cílios na mesma visita? Escolha um serviço de cada profissional: elas atendem
+          ao mesmo tempo.
+        </p>
+      ) : null}
+
       <div className="app-filter" role="group" aria-label="Filtrar serviços">
         {[{ id: 'all', name: 'Todos' }, ...services.map(({ service }) => service)].map((option) => (
           <button
@@ -42,15 +50,14 @@ export default function CatalogScreen({ catalog, signedIn, selected, onPick, onN
           <h2 className="app-label">
             {service.name} · com a <span className={`app-who ${pro.key}`}>{pro.first}</span>
           </h2>
-          <div className="app-cards" role="radiogroup" aria-label={service.name}>
+          <div className="app-cards" role="group" aria-label={service.name}>
             {service.service_types.map((type) => {
-              const on = selected?.type.id === type.id
+              const on = selected.some((item) => item.type.id === type.id)
               return (
                 <button
                   key={type.id}
                   type="button"
-                  role="radio"
-                  aria-checked={on}
+                  aria-pressed={on}
                   className={`app-card${on ? ' on' : ''}`}
                   onClick={() => onPick({ pro, service, type })}
                 >
@@ -76,13 +83,15 @@ export default function CatalogScreen({ catalog, signedIn, selected, onPick, onN
       ))}
 
       <BottomBar>
-        {selected ? (
+        {selected.length ? (
           <p className="app-bar-note">
-            {selected.type.name} · {formatDuration(selected.type.duration_minutes)}
+            {selected.map(({ type }) => type.name).join(' + ')} ·{' '}
+            {formatDuration(sessionMinutes(selected))}
+            {selected.length > 1 ? ', ao mesmo tempo' : ''}
           </p>
         ) : null}
-        <AppButton full disabled={!selected} onClick={onNext}>
-          {selected ? 'Escolher data e horário' : 'Escolha um serviço para continuar'}
+        <AppButton full disabled={!selected.length} onClick={onNext}>
+          {selected.length ? 'Escolher data e horário' : 'Escolha um serviço para continuar'}
         </AppButton>
       </BottomBar>
     </>

@@ -574,3 +574,40 @@ grant execute on function remove_client to authenticated;
 -- Valores visíveis para todas as pessoas, com ou sem conta.
 drop policy if exists service_prices_read on service_prices;
 create policy service_prices_read on service_prices for select using (true);
+
+-- Sessão conjunta: um serviço de cada profissional, no mesmo horário. Reserva as duas ou nenhuma.
+create function create_joint_appointment(
+  p_service_types uuid[],
+  p_starts_at timestamptz,
+  p_name text,
+  p_whatsapp text
+) returns uuid
+language plpgsql security definer set search_path = public as $$
+declare
+  v_group uuid := gen_random_uuid();
+  v_type uuid;
+  v_ids uuid[] := '{}';
+begin
+  if coalesce(array_length(p_service_types, 1), 0) <> 2 then
+    raise exception 'Escolha um serviço de cada profissional' using errcode = 'P0001';
+  end if;
+
+  if (
+    select count(distinct s.professional_id)
+    from service_types st join services s on s.id = st.service_id
+    where st.id = any (p_service_types)
+  ) <> 2 then
+    raise exception 'Escolha um serviço de cada profissional' using errcode = 'P0001';
+  end if;
+
+  foreach v_type in array p_service_types loop
+    v_ids := v_ids || create_appointment(v_type, p_starts_at, p_name, p_whatsapp);
+  end loop;
+
+  update appointments set joint_group_id = v_group where id = any (v_ids);
+  return v_group;
+end;
+$$;
+
+revoke all on function create_joint_appointment from public;
+grant execute on function create_joint_appointment to anon, authenticated;

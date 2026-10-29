@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { proNames } from '../../lib/booking.js'
 import { clock } from '../../lib/dates.js'
 import { normalizeWhatsapp } from '../../lib/phone.js'
 import AppButton from '../app/AppButton.jsx'
@@ -11,7 +12,7 @@ import BookingSummary from './BookingSummary.jsx'
 const FORM_ID = 'booking-form'
 
 export default function WhoScreen({
-  choice,
+  choices,
   date,
   minutes,
   submitting,
@@ -35,8 +36,10 @@ export default function WhoScreen({
       <BackButton onClick={onBack}>Data e horário</BackButton>
       <p className="app-step">Passo 3 de 3</p>
       <h1 className="app-headline">Seus dados</h1>
-      <BookingSummary choice={choice} date={date} minutes={minutes} />
-      <BookingNotes pro={choice.pro} />
+      <BookingSummary choices={choices} date={date} minutes={minutes} />
+      {choices.map(({ pro }) => (
+        <BookingNotes key={pro.id} pro={pro} />
+      ))}
       <form id={FORM_ID} onSubmit={handleSubmit}>
         <Field
           label="Nome completo"
@@ -56,7 +59,7 @@ export default function WhoScreen({
           help={
             invalid
               ? 'Confira o número: use o DDD e os 9 dígitos.'
-              : `A ${choice.pro.first} confirma o seu horário por este WhatsApp.`
+              : `${choices.length > 1 ? 'Cada uma' : `A ${proNames(choices)}`} confirma o seu horário por este WhatsApp.`
           }
           value={whatsapp}
           onChange={(event) => setWhatsapp(event.target.value)}

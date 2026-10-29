@@ -78,6 +78,16 @@ export const createAppointment = async ({ serviceTypeId, startsAt, name, whatsap
     }),
   )
 
+export const createJointAppointment = async ({ serviceTypeIds, startsAt, name, whatsapp }) =>
+  unwrap(
+    await supabase.rpc('create_joint_appointment', {
+      p_service_types: serviceTypeIds,
+      p_starts_at: startsAt,
+      p_name: name,
+      p_whatsapp: whatsapp,
+    }),
+  )
+
 export const signIn = async (email, password) =>
   unwrap(await supabase.auth.signInWithPassword({ email, password }))
 
@@ -149,7 +159,7 @@ export const fetchAgenda = async (professionalId) =>
     await supabase
       .from('appointments')
       .select(
-        'id, starts_at, ends_at, status, price_cents, deposit_paid_cents, deposit_payment, clients(name, whatsapp, photo_url), service_types(name, services(name))',
+        'id, joint_group_id, starts_at, ends_at, status, price_cents, deposit_paid_cents, deposit_payment, clients(name, whatsapp, photo_url), service_types(name, services(name))',
       )
       .eq('professional_id', professionalId)
       .gte('starts_at', timestamp(addDays(weekStart(todayIso()), -28), 0))

@@ -6,7 +6,7 @@ import Notice from '../app/Notice.jsx'
 import Calendar from './Calendar.jsx'
 
 export default function WhenScreen({
-  choice,
+  choices,
   availability,
   date,
   minutes,
@@ -16,6 +16,7 @@ export default function WhenScreen({
   onMinutes,
   onNext,
 }) {
+  const joint = choices.length > 1
   const slots = availability.days.find((day) => day.date === date)?.slots ?? []
   const pending = `Escolha ${date ? 'um horário' : 'uma data'} para continuar`
 
@@ -25,8 +26,13 @@ export default function WhenScreen({
       <p className="app-step">Passo 2 de 3</p>
       <h1 className="app-headline">Escolha a data</h1>
       <p className="app-lead">
-        {choice.type.name} com a{' '}
-        <span className={`app-who ${choice.pro.key}`}>{choice.pro.first}</span>
+        {choices.map(({ type, pro }, index) => (
+          <span key={type.id}>
+            {index ? ' e ' : ''}
+            {type.name} com a <span className={`app-who ${pro.key}`}>{pro.first}</span>
+          </span>
+        ))}
+        {joint ? '. As duas atendem ao mesmo tempo.' : ''}
       </p>
       {availability.loading ? <p className="app-lead">Carregando horários...</p> : null}
       {availability.error ? (
@@ -36,7 +42,13 @@ export default function WhenScreen({
       ) : null}
       {availability.days.length ? (
         <div className="app-spaced">
-          <Calendar pro={choice.pro} days={availability.days} selected={date} onSelect={onDate} />
+          <Calendar
+            pro={choices[0].pro}
+            joint={joint}
+            days={availability.days}
+            selected={date}
+            onSelect={onDate}
+          />
         </div>
       ) : null}
       {date ? (

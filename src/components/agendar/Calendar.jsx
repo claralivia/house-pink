@@ -6,7 +6,7 @@ import Icon from '../app/Icon.jsx'
 
 const WEEKDAYS = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb']
 
-export default function Calendar({ pro, days, selected, onSelect }) {
+export default function Calendar({ pro, joint, days, selected, onSelect }) {
   const today = days[0].date
   const windowEnd = days.at(-1).date
   const [month, setMonth] = useState(monthOf(today))
@@ -63,8 +63,9 @@ export default function Calendar({ pro, days, selected, onSelect }) {
         })}
       </div>
       <p className="app-legend">
-        Dias riscados: sem atendimento da {pro.first} (dia da semana em que ela não atende, folga ou
-        férias).
+        {joint
+          ? 'Dias riscados: uma das duas não atende (dia da semana, folga ou férias).'
+          : `Dias riscados: sem atendimento da ${pro.first} (dia da semana em que ela não atende, folga ou férias).`}
       </p>
       {beyondWindow ? (
         <div className="app-late">

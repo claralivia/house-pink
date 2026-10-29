@@ -81,6 +81,11 @@ export default function AppointmentSheet({
         {type.services.name}, {type.name}
         {price_cents === null ? '' : ` · ${formatPrice(price_cents)}`}
       </p>
+      {appointment.joint_group_id ? (
+        <p className="app-item-meta">
+          Sessão conjunta: a cliente também marcou com a outra profissional neste horário.
+        </p>
+      ) : null}
       {deposit_paid_cents > 0 ? (
         <p className="app-item-meta">
           Sinal de {formatPrice(deposit_paid_cents)} pago no {METHOD_LABEL[deposit_payment]}

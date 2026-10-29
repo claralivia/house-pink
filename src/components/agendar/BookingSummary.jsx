@@ -1,17 +1,17 @@
+import { sessionMinutes } from '../../lib/booking.js'
 import { clock, formatDuration, shortDate } from '../../lib/dates.js'
 
-export default function BookingSummary({ choice, date, minutes }) {
-  const { pro, service, type } = choice
+export default function BookingSummary({ choices, date, minutes }) {
+  const joint = choices.length > 1
   const rows = [
-    ['Serviço', `${service.name}, ${type.name}`],
-    [
-      'Com',
-      <span key="pro" className={`app-who ${pro.key}`}>
-        {pro.first}
+    ...choices.map(({ pro, service, type }, index) => [
+      joint ? `Serviço ${index + 1}` : 'Serviço',
+      <span key={type.id}>
+        {service.name}, {type.name}, com a <span className={`app-who ${pro.key}`}>{pro.first}</span>
       </span>,
-    ],
+    ]),
     ['Quando', `${shortDate(date)}, ${clock(minutes)}`],
-    ['Duração', formatDuration(type.duration_minutes)],
+    ['Duração', `${formatDuration(sessionMinutes(choices))}${joint ? ', ao mesmo tempo' : ''}`],
   ]
 
   return (

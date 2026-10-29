@@ -30,6 +30,18 @@ export const slotsForDay = ({ date, hours, timeOff, busy, duration, now }) =>
 const isClosed = ({ hours, timeOff }, date) =>
   isOff(timeOff, date) || !hours.some(({ weekday }) => weekday === weekdayOf(date))
 
+// Dias em que as duas profissionais atendem, com só os horários livres das duas.
+export const joinDays = (first, second) => {
+  const other = Object.fromEntries(second.map((day) => [day.date, day]))
+  return first
+    .filter((day) => other[day.date])
+    .map((day) => ({
+      date: day.date,
+      closed: day.closed || other[day.date].closed,
+      slots: day.slots.filter((slot) => other[day.date].slots.includes(slot)),
+    }))
+}
+
 export const buildDays = ({ availability, duration, windowDays, now = Date.now() }) =>
   dateRange(todayIso(new Date(now)), windowDays).map((date) => ({
     date,
