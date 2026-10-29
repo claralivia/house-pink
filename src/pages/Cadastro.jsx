@@ -48,7 +48,7 @@ export default function Cadastro() {
   return (
     <AuthLayout
       title="Criar conta"
-      lead="Para ver os valores e acompanhar os seus horários. Agendar continua sem precisar de conta."
+      lead="Para acompanhar os seus horários e agendar de novo com um toque. Agendar continua sem precisar de conta."
     >
       {pendingEmail ? (
         <Notice tone="success" title="Confirme o seu e-mail">

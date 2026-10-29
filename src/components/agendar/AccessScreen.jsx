@@ -11,7 +11,7 @@ export default function AccessScreen({ onGuest }) {
         <Link className="app-access-card recommended" to="/entrar?volta=agendar">
           <span className="app-access-tag">Recomendado</span>
           <strong>Sou cliente</strong>
-          <span>Entre ou crie a sua conta. Você vê os valores e acompanha os seus horários.</span>
+          <span>Entre ou crie a sua conta para acompanhar os seus horários.</span>
         </Link>
         <button type="button" className="app-access-card" onClick={onGuest}>
           <strong>Sou visitante</strong>
@@ -24,9 +24,9 @@ export default function AccessScreen({ onGuest }) {
       </div>
 
       <Notice tone="info" title="Como funciona para visitantes">
-        Visitantes não conseguem ver os valores dos serviços, só os horários. No final, você precisa
-        confirmar o horário com a profissional pelo WhatsApp, porque alguns serviços dependem de
-        sinal. Por isso recomendamos criar uma conta.
+        Visitantes agendam só com nome e WhatsApp. No final, você precisa confirmar o horário com a
+        profissional pelo WhatsApp, porque alguns serviços dependem de sinal. Com uma conta, você
+        acompanha os seus horários e agenda de novo com um toque.
       </Notice>
     </>
   )

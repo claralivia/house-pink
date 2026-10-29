@@ -20,7 +20,7 @@ export default function CatalogScreen({ catalog, signedIn, selected, onPick, onN
       <p className="app-lead">
         {signedIn
           ? 'Escolha o serviço e veja os valores.'
-          : 'Sem criar conta: só o seu nome e o seu WhatsApp.'}
+          : 'Escolha o serviço. Sem criar conta: só o seu nome e o seu WhatsApp.'}
       </p>
 
       <div className="app-filter" role="group" aria-label="Filtrar serviços">
@@ -66,7 +66,7 @@ export default function CatalogScreen({ catalog, signedIn, selected, onPick, onN
                     {type.description ? (
                       <span className="app-card-about">{type.description}</span>
                     ) : null}
-                    <PriceTag cents={priceOf(type)} signedIn={signedIn} />
+                    <PriceTag cents={priceOf(type)} signedIn />
                   </span>
                 </button>
               )

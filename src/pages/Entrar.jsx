@@ -73,7 +73,7 @@ export default function Entrar() {
       <p className="auth-switch">
         Ainda não tem conta? <Link to="/cadastro">Criar conta</Link>
         <span className="app-help" style={{ display: 'block' }}>
-          Com conta, você vê os valores dos serviços e acompanha os seus horários.
+          Com conta, você acompanha os seus horários e agenda de novo com um toque.
         </span>
       </p>
     </AuthLayout>

@@ -243,7 +243,7 @@ create policy service_types_write on service_types for all
     where s.id = service_id and s.professional_id = current_professional_id()
   ));
 
-create policy service_prices_read on service_prices for select to authenticated using (true);
+create policy service_prices_read on service_prices for select using (true);
 create policy service_prices_write on service_prices for all to authenticated
   using (exists (
     select 1 from service_types st
@@ -570,3 +570,7 @@ $$;
 
 revoke all on function remove_client from public;
 grant execute on function remove_client to authenticated;
+
+-- Valores visíveis para todas as pessoas, com ou sem conta.
+drop policy if exists service_prices_read on service_prices;
+create policy service_prices_read on service_prices for select using (true);

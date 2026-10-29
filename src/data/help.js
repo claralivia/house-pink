@@ -224,7 +224,7 @@ export const CLIENT_MODULES = [
       {
         id: 'criar-conta',
         title: 'Criar a sua conta',
-        summary: 'Para ver os valores e acompanhar os seus horários.',
+        summary: 'Para acompanhar os seus horários e agendar de novo.',
         video: 'client-criar-conta-v1.mp4',
         steps: [
           'No site, toque em “Agendar” e depois em “Sou cliente”. Você também acha o “Entrar” no fim da página.',
@@ -272,17 +272,17 @@ export const CLIENT_MODULES = [
           'Escolha o serviço que você quer e o dia. Os horários livres aparecem para você tocar.',
           'Digite o seu nome e o seu WhatsApp e toque em “Confirmar horário”.',
           'Pronto: o horário fica reservado. A profissional confirma com você pelo WhatsApp, porque alguns serviços dependem de sinal.',
-          'Sem conta, os valores não aparecem. Criar uma conta é recomendado.',
+          'Criar uma conta é recomendado: assim você acompanha os seus horários.',
         ],
       },
       {
         id: 'agendar-com-conta',
         title: 'Agendar com a sua conta',
-        summary: 'Você vê os valores e acompanha tudo.',
+        summary: 'Você acompanha tudo e agenda de novo com um toque.',
         video: 'client-agendar-com-conta-v1.mp4',
         steps: [
           'Entre na sua conta e toque em “Agendar um horário”. Se estiver no site, toque em “Agendar” e escolha “Sou cliente”.',
-          'Escolha o serviço. Agora os valores aparecem.',
+          'Escolha o serviço. Os valores aparecem com ou sem conta.',
           'Escolha o dia e o horário e toque em “Confirmar horário”.',
           'Se você já fez um serviço antes, o botão “Agendar de novo” já deixa tudo escolhido.',
         ],
