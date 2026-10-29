@@ -1,5 +1,5 @@
 import { PROS } from '../data/site.js'
-import { addDays, timestamp, todayIso } from './dates.js'
+import { addDays, timestamp, todayIso, weekStart } from './dates.js'
 import { supabase } from './supabase.js'
 
 const CONFLICT_CODE = '23P01'
@@ -82,7 +82,7 @@ export const fetchMyAppointments = async () =>
     await supabase
       .from('appointments')
       .select(
-        'id, starts_at, ends_at, status, price_cents, service_types(name, services(name, professionals(key, name)))',
+        'id, starts_at, ends_at, status, price_cents, service_types(id, name, services(name, professionals(key, name, booking_notes)))',
       )
       .order('starts_at', { ascending: false }),
   )
@@ -123,7 +123,7 @@ export const fetchAgenda = async (professionalId) =>
         'id, starts_at, ends_at, status, price_cents, deposit_paid_cents, deposit_payment, clients(name, whatsapp), service_types(name, services(name))',
       )
       .eq('professional_id', professionalId)
-      .gte('starts_at', timestamp(todayIso(), 0))
+      .gte('starts_at', timestamp(addDays(weekStart(todayIso()), -28), 0))
       .order('starts_at'),
   )
 
