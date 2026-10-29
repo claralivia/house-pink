@@ -27,7 +27,7 @@ export const PRO_MODULES = [
         id: 'ver-agenda',
         title: 'Ver a agenda por dia ou por semana',
         summary: 'Como saber quem vem hoje e como está a semana.',
-        video: 'pro-ver-agenda.mp4',
+        video: 'pro-ver-agenda-v2.mp4',
         steps: [
           'Toque em “Agenda”, na barra de baixo.',
           'Em “Dia”, toque no dia que quer ver na faixa de datas. Os dias com horários marcados mostram quantos são.',
