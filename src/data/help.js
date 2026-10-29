@@ -67,6 +67,8 @@ export const PRO_MODULES = [
           'Para mudar, toque em “Mudar o horário ou o valor”. Troque o dia, a hora, a duração ou o valor e toque em “Salvar”.',
           'Para desmarcar, toque em “Cancelar este horário” e depois em “Sim, cancelar”.',
           'Depois, avise a cliente pelo WhatsApp.',
+          'Marcou algo errado? Em um atendimento concluído, toque em “Desfazer: voltar para confirmado”. Em um cancelado, toque em “Reativar este horário”.',
+          'Se cadastrou o horário por engano, toque em “Apagar este registro” e depois em “Sim, apagar”. Ele some da agenda e dos ganhos, e não dá para voltar atrás.',
         ],
       },
     ],
@@ -144,6 +146,7 @@ export const PRO_MODULES = [
           'Para a foto, toque em “Adicionar foto” ou “Trocar foto” e escolha uma imagem do celular.',
           'Toque em “Salvar”. A mudança já vale para os próximos agendamentos.',
           'Para criar um serviço novo, use “Adicionar tipo”, no fim da lista do serviço.',
+          'Para apagar um serviço cadastrado errado, toque em “Excluir este serviço”. Se ele já tem horários na agenda, o app avisa e você só desmarca “Disponível para agendar” para ele sumir do site.',
         ],
       },
       {
