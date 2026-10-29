@@ -100,6 +100,10 @@ export default function Clients({ professional, onAppointmentSaved }) {
       {view?.type === 'add' ? (
         <AddClient
           onSaved={clients.reload}
+          onRemoved={() => {
+            clients.reload()
+            onAppointmentSaved?.()
+          }}
           onSchedule={(client) => setView({ type: 'schedule', client })}
           onClose={close}
         />

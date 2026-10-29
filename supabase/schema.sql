@@ -535,3 +535,38 @@ on conflict (id) do nothing;
 
 create policy help_pro_read on storage.objects for select to authenticated
   using (bucket_id = 'help-pro' and current_professional_id() is not null);
+
+-- Tirar uma cliente da lista da profissional. Se ela tem horários com a profissional,
+-- só apaga junto com o histórico quando p_with_history for verdadeiro.
+create function remove_client(p_client uuid, p_with_history boolean default false) returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare
+  v_professional uuid := current_professional_id();
+  v_count integer;
+begin
+  if v_professional is null or not serves_client(p_client) then
+    raise exception 'Sem permissão' using errcode = 'P0001';
+  end if;
+
+  select count(*) into v_count
+  from appointments
+  where client_id = p_client and professional_id = v_professional;
+
+  if v_count > 0 and not p_with_history then
+    return jsonb_build_object('removed', false, 'appointments', v_count);
+  end if;
+
+  delete from appointments where client_id = p_client and professional_id = v_professional;
+  delete from professional_clients where client_id = p_client and professional_id = v_professional;
+  delete from clients c
+  where c.id = p_client
+    and c.user_id is null
+    and not exists (select 1 from appointments a where a.client_id = c.id)
+    and not exists (select 1 from professional_clients pc where pc.client_id = c.id);
+
+  return jsonb_build_object('removed', true, 'appointments', v_count);
+end;
+$$;
+
+revoke all on function remove_client from public;
+grant execute on function remove_client to authenticated;

@@ -346,6 +346,9 @@ export const createManualAppointment = async ({ serviceTypeId, startsAt, name, w
 export const addClients = async (clients) =>
   unwrap(await supabase.rpc('add_clients', { p_clients: clients }))
 
+export const removeClient = async (id, withHistory = false) =>
+  unwrap(await supabase.rpc('remove_client', { p_client: id, p_with_history: withHistory }))
+
 export const updateClientRecord = async (id, { name, whatsapp }) =>
   unwrap(
     await supabase.rpc('update_client_record', {

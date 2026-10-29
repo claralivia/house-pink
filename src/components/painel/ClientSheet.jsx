@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { updateClientRecord } from '../../lib/api.js'
+import { removeClient, updateClientRecord } from '../../lib/api.js'
 import { whatsappUrl } from '../../lib/links.js'
 import { formatPhone, normalizeWhatsapp } from '../../lib/phone.js'
 import AppButton from '../app/AppButton.jsx'
@@ -8,8 +8,9 @@ import Field from '../app/Field.jsx'
 import Modal from '../app/Modal.jsx'
 import Notice from '../app/Notice.jsx'
 
-export default function ClientSheet({ client, onSaved, onSchedule, onClose }) {
+export default function ClientSheet({ client, onSaved, onRemoved, onSchedule, onClose }) {
   const [editing, setEditing] = useState(false)
+  const [removal, setRemoval] = useState({ step: 'idle', appointments: 0 })
   const [name, setName] = useState(client.name)
   const [whatsapp, setWhatsapp] = useState(client.whatsapp.replace(/^55/, ''))
   const [error, setError] = useState(null)
@@ -30,6 +31,53 @@ export default function ClientSheet({ client, onSaved, onSchedule, onClose }) {
     }
   }
 
+  const remove = async (withHistory) => {
+    try {
+      const result = await removeClient(client.id, withHistory)
+      if (result.removed) {
+        onRemoved()
+        onClose()
+      } else {
+        setRemoval({ step: 'history', appointments: result.appointments })
+      }
+    } catch {
+      setRemoval({ step: 'failed', appointments: 0 })
+    }
+  }
+
+  const removalView = () => {
+    const { step, appointments } = removal
+    const plural = appointments === 1 ? 'horário' : 'horários'
+    const question =
+      step === 'history'
+        ? `${first} tem ${appointments} ${plural} com você`
+        : `Tirar ${first} da sua lista?`
+    const help =
+      step === 'history'
+        ? 'Para tirar a cliente, esses horários também serão apagados da agenda e dos ganhos. Não dá para desfazer.'
+        : 'Ela sai da sua lista. Não dá para desfazer.'
+
+    return (
+      <div className="app-actions">
+        <p className="app-modal-question">{question}</p>
+        <p className="app-help">{help}</p>
+        {step === 'failed' ? (
+          <Notice tone="danger" title="Não foi possível tirar a cliente" />
+        ) : null}
+        <AppButton variant="danger" full onClick={() => remove(step === 'history')}>
+          {step === 'history' ? 'Sim, apagar tudo' : 'Sim, tirar da lista'}
+        </AppButton>
+        <AppButton
+          variant="secondary"
+          full
+          onClick={() => setRemoval({ step: 'idle', appointments: 0 })}
+        >
+          Não, manter
+        </AppButton>
+      </div>
+    )
+  }
+
   return (
     <Modal title={client.name} onClose={onClose}>
       <p className="app-step">Cliente</p>
@@ -41,7 +89,9 @@ export default function ClientSheet({ client, onSaved, onSchedule, onClose }) {
         </div>
       </div>
 
-      {editing ? (
+      {removal.step === 'idle' ? null : removalView()}
+
+      {removal.step === 'idle' && editing ? (
         <form onSubmit={save}>
           <Field
             label="Nome"
@@ -67,7 +117,9 @@ export default function ClientSheet({ client, onSaved, onSchedule, onClose }) {
             </AppButton>
           </div>
         </form>
-      ) : (
+      ) : null}
+
+      {removal.step === 'idle' && !editing ? (
         <div className="app-actions">
           <AppButton
             full
@@ -90,8 +142,15 @@ export default function ClientSheet({ client, onSaved, onSchedule, onClose }) {
               Corrigir nome ou WhatsApp
             </AppButton>
           ) : null}
+          <AppButton
+            variant="ghost"
+            full
+            onClick={() => setRemoval({ step: 'confirm', appointments: 0 })}
+          >
+            Tirar da minha lista
+          </AppButton>
         </div>
-      )}
+      ) : null}
     </Modal>
   )
 }
