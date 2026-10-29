@@ -2017,3 +2017,8 @@ img.app-avatar.pro {
 .app-nudge > span {
   display: grid;
 }
+.app-nudge > svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+}
