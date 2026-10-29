@@ -82,3 +82,30 @@ export const dateOf = (value) => ISO.format(new Date(value))
 export const timeOf = (value) => CLOCK.format(new Date(value))
 
 export const timestamp = (isoDate, minutes) => `${isoDate}T${clock(minutes)}:00${OFFSET}`
+
+export const weekStart = (isoDate) => addDays(isoDate, -((weekdayOf(isoDate) + 6) % 7))
+
+const firstOfMonth = (isoDate) => `${monthOf(isoDate)}-01`
+
+export const periodOf = (mode, anchor) =>
+  ({
+    day: { from: anchor, to: addDays(anchor, 1) },
+    week: { from: weekStart(anchor), to: addDays(weekStart(anchor), 7) },
+    month: { from: firstOfMonth(anchor), to: `${addMonths(monthOf(anchor), 1)}-01` },
+  })[mode]
+
+export const shiftPeriod = (mode, anchor, amount) =>
+  ({
+    day: addDays(anchor, amount),
+    week: addDays(anchor, amount * 7),
+    month: `${addMonths(monthOf(anchor), amount)}-01`,
+  })[mode]
+
+export const periodTitle = (mode, anchor) => {
+  const { from, to } = periodOf(mode, anchor)
+  return {
+    day: longDate(from),
+    week: `${shortDate(from)} a ${shortDate(addDays(to, -1))}`,
+    month: monthTitle(monthOf(anchor)),
+  }[mode]
+}

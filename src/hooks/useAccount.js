@@ -13,6 +13,7 @@ export function useAccount() {
     loading,
     session,
     professional: profile.data,
+    reload: profile.reload,
     role: session && !loading ? roleOf(profile.data) : null,
   }
 }

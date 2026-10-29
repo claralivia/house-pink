@@ -1,7 +1,7 @@
 import { dateOf, shortDate } from '../../lib/dates.js'
 import AppointmentRow from './AppointmentRow.jsx'
 
-export default function AgendaList({ appointments, pro, onStatus, onPay }) {
+export default function AgendaList({ appointments, pro, onStatus, onPay, onDeposit, onChanged }) {
   const days = Object.entries(Object.groupBy(appointments, ({ starts_at }) => dateOf(starts_at)))
 
   return days.length ? (
@@ -16,6 +16,8 @@ export default function AgendaList({ appointments, pro, onStatus, onPay }) {
               pro={pro}
               onStatus={onStatus}
               onPay={onPay}
+              onDeposit={onDeposit}
+              onChanged={onChanged}
             />
           ))}
         </ul>

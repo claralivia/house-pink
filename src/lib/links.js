@@ -7,3 +7,5 @@ const defaultMessage = ({ first }) =>
 
 export const whatsappUrl = (pro, message = defaultMessage(pro)) =>
   `https://wa.me/${pro.whatsapp}?text=${encodeURIComponent(message)}`
+
+export const shareUrl = (text) => `https://wa.me/?text=${encodeURIComponent(text)}`

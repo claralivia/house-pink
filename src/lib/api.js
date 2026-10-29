@@ -105,7 +105,13 @@ export const signOut = async () => unwrap(await supabase.auth.signOut())
 export const fetchMyProfessional = async () => {
   const id = unwrap(await supabase.rpc('current_professional_id'))
   return id
-    ? unwrap(await supabase.from('professionals').select('id, key, name').eq('id', id).single())
+    ? unwrap(
+        await supabase
+          .from('professionals')
+          .select('id, key, name, booking_window_days, deposit_cents, booking_notes')
+          .eq('id', id)
+          .single(),
+      )
     : null
 }
 
@@ -114,7 +120,7 @@ export const fetchAgenda = async (professionalId) =>
     await supabase
       .from('appointments')
       .select(
-        'id, starts_at, ends_at, status, price_cents, clients(name, whatsapp), service_types(name, services(name))',
+        'id, starts_at, ends_at, status, price_cents, deposit_paid_cents, deposit_payment, clients(name, whatsapp), service_types(name, services(name))',
       )
       .eq('professional_id', professionalId)
       .gte('starts_at', timestamp(todayIso(), 0))
@@ -137,7 +143,9 @@ export const fetchEarnings = async (professionalId, from, to) =>
   unwrap(
     await supabase
       .from('appointments')
-      .select('id, starts_at, price_cents, payment, clients(name), service_types(name)')
+      .select(
+        'id, starts_at, price_cents, payment, deposit_paid_cents, deposit_payment, clients(name), service_types(name)',
+      )
       .eq('professional_id', professionalId)
       .eq('status', 'done')
       .gte('starts_at', from)
@@ -149,7 +157,9 @@ export const fetchOwnTypes = async (professionalId) =>
   unwrap(
     await supabase
       .from('service_types')
-      .select('id, name, image_url, services!inner(name, position, professional_id)')
+      .select(
+        'id, service_id, name, description, duration_minutes, active, image_url, service_prices(price_cents), services!inner(id, name, position, professional_id)',
+      )
       .eq('services.professional_id', professionalId)
       .order('position'),
   )
@@ -163,3 +173,73 @@ export const uploadTypePhoto = async (typeId, file) => {
     await supabase.from('service_types').update({ image_url: data.publicUrl }).eq('id', typeId),
   )
 }
+
+export const updateProfessional = async (id, patch) =>
+  unwrap(await supabase.from('professionals').update(patch).eq('id', id))
+
+export const fetchWorkingHours = async (professionalId) =>
+  unwrap(
+    await supabase
+      .from('working_hours')
+      .select('weekday, starts_at, ends_at')
+      .eq('professional_id', professionalId),
+  )
+
+export const saveWorkingHours = async (hours) =>
+  unwrap(await supabase.rpc('set_working_hours', { p_hours: hours }))
+
+export const fetchTimeOff = async (professionalId) =>
+  unwrap(
+    await supabase
+      .from('time_off')
+      .select('id, starts_on, ends_on, reason')
+      .eq('professional_id', professionalId)
+      .gte('ends_on', todayIso())
+      .order('starts_on'),
+  )
+
+export const addTimeOff = async (professionalId, { starts_on, ends_on, reason }) =>
+  unwrap(
+    await supabase
+      .from('time_off')
+      .insert({ professional_id: professionalId, starts_on, ends_on, reason: reason || null }),
+  )
+
+export const removeTimeOff = async (id) =>
+  unwrap(await supabase.from('time_off').delete().eq('id', id))
+
+export const countBookedBetween = async (professionalId, from, to) => {
+  const { count, error } = await supabase
+    .from('appointments')
+    .select('id', { count: 'exact', head: true })
+    .eq('professional_id', professionalId)
+    .in('status', ['pending', 'confirmed'])
+    .gte('starts_at', from)
+    .lt('starts_at', to)
+  if (error) throw error
+  return count
+}
+
+export const updateType = async (id, patch) =>
+  unwrap(await supabase.from('service_types').update(patch).eq('id', id))
+
+export const savePrice = async (typeId, cents) =>
+  unwrap(
+    await supabase
+      .from('service_prices')
+      .upsert({ service_type_id: typeId, price_cents: cents }, { onConflict: 'service_type_id' }),
+  )
+
+export const addType = async (serviceId, { name, duration_minutes, price_cents }) => {
+  const created = unwrap(
+    await supabase
+      .from('service_types')
+      .insert({ service_id: serviceId, name, duration_minutes, position: 99 })
+      .select('id')
+      .single(),
+  )
+  await savePrice(created.id, price_cents)
+}
+
+export const updateAppointment = async (id, patch) =>
+  unwrap(await supabase.from('appointments').update(patch).eq('id', id))
