@@ -12,7 +12,11 @@ export default function NextAppointment({ appointment, onCancel }) {
   const [view, setView] = useState('main')
   const { starts_at, status, service_types: type } = appointment
   const professional = type.services.professionals
-  const pro = useTeam()[professional.key]
+  const team = useTeam()
+  const pro = team[professional.key] ?? {
+    name: professional.name,
+    first: professional.name.split(' ')[0],
+  }
   const rules = professional.booking_notes ?? []
   const confirmed = status === 'confirmed'
 
@@ -40,9 +44,11 @@ export default function NextAppointment({ appointment, onCancel }) {
 
       {view === 'main' ? (
         <div className="app-actions">
-          <AppButton full href={whatsappUrl(pro, message(pro, appointment))}>
-            Falar com a {pro.first} no WhatsApp
-          </AppButton>
+          {pro.whatsapp ? (
+            <AppButton full href={whatsappUrl(pro, message(pro, appointment))}>
+              Falar com a {pro.first} no WhatsApp
+            </AppButton>
+          ) : null}
           {rules.length ? (
             <AppButton variant="secondary" full onClick={() => setView('rules')}>
               Ver regras de atendimento
