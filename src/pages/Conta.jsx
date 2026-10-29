@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import AppButton from '../components/app/AppButton.jsx'
 import AppShell from '../components/app/AppShell.jsx'
 import Notice from '../components/app/Notice.jsx'
 import TabBar from '../components/app/TabBar.jsx'
-import ClientAppointments from '../components/conta/ClientAppointments.jsx'
+import ClientHistory from '../components/conta/ClientHistory.jsx'
+import ClientHome from '../components/conta/ClientHome.jsx'
 import ProfileForm from '../components/conta/ProfileForm.jsx'
 import PasswordForm from '../components/painel/PasswordForm.jsx'
 import { PAGE_TITLES } from '../data/site.js'
@@ -14,15 +15,18 @@ import { usePageTitle } from '../hooks/usePageTitle.js'
 import { cancelMyAppointment, fetchMyAppointments, fetchMyClient, signOut } from '../lib/api.js'
 
 const TABS = [
-  { id: 'horarios', label: 'Horários', icon: 'cal' },
+  { id: 'inicio', label: 'Início', icon: 'cal' },
+  { id: 'historico', label: 'Histórico', icon: 'list' },
   { id: 'perfil', label: 'Perfil', icon: 'user' },
 ]
+
+const firstName = (name) => name?.trim().split(' ')[0]
 
 export default function Conta() {
   usePageTitle(PAGE_TITLES.conta)
 
   const account = useAccount()
-  const [tab, setTab] = useState('horarios')
+  const [tab, setTab] = useState('inicio')
   const [cancelFailed, setCancelFailed] = useState(false)
   const userId = account.session?.user.id
   const clientKey = account.role === 'client' ? userId : null
@@ -45,30 +49,31 @@ export default function Conta() {
 
   const failed = client.error || appointments.error
   const loading = account.loading || client.loading || appointments.loading
+  const titles = {
+    inicio: firstName(client.data?.name) ? `Olá, ${firstName(client.data.name)}` : 'Olá',
+    historico: 'Histórico',
+    perfil: 'Perfil',
+  }
 
   return (
     <AppShell hideAccount withBar bottom={<TabBar tabs={TABS} current={tab} onChange={setTab} />}>
-      <h1 className="app-headline">{tab === 'horarios' ? 'Meus horários' : 'Perfil'}</h1>
-      {client.data?.name ? <p className="app-lead">{client.data.name}</p> : null}
+      <h1 className="app-headline">{titles[tab]}</h1>
       {loading ? <p className="app-lead">Carregando...</p> : null}
       {failed ? (
         <Notice tone="danger" title="Não foi possível carregar a sua conta">
           Atualize a página.
         </Notice>
       ) : null}
-      {tab === 'horarios' && appointments.data ? (
-        <>
-          <Link className="app-btn primary full" to="/agendar" style={{ marginTop: 16 }}>
-            Agendar novo horário
-          </Link>
-          {cancelFailed ? (
-            <Notice tone="danger" title="Não foi possível cancelar">
-              O horário já passou ou já foi cancelado. Se precisar, chame a profissional no
-              WhatsApp.
-            </Notice>
-          ) : null}
-          <ClientAppointments appointments={appointments.data} onCancel={cancel} />
-        </>
+      {cancelFailed ? (
+        <Notice tone="danger" title="Não foi possível cancelar">
+          O horário já passou ou já foi cancelado. Se precisar, chame a profissional no WhatsApp.
+        </Notice>
+      ) : null}
+      {tab === 'inicio' && appointments.data ? (
+        <ClientHome appointments={appointments.data} onCancel={cancel} />
+      ) : null}
+      {tab === 'historico' && appointments.data ? (
+        <ClientHistory appointments={appointments.data} />
       ) : null}
       {tab === 'perfil' && client.data ? (
         <>
