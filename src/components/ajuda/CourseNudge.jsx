@@ -16,7 +16,7 @@ export default function CourseNudge({ onOpen }) {
       <span>
         <span className="app-item-name">Aprenda a usar o painel</span>
         <span className="app-item-meta">
-          {count} de {lessons.length} aulas vistas. Toque para continuar.
+          {count} de {lessons.length} aulas vistas
         </span>
       </span>
       <Icon name="chevron-right" />
