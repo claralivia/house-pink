@@ -4,6 +4,7 @@ import AppButton from '../components/app/AppButton.jsx'
 import AppShell from '../components/app/AppShell.jsx'
 import Notice from '../components/app/Notice.jsx'
 import TabBar from '../components/app/TabBar.jsx'
+import FeedbackModal from '../components/conta/FeedbackModal.jsx'
 import ClientHistory from '../components/conta/ClientHistory.jsx'
 import ClientHome from '../components/conta/ClientHome.jsx'
 import ProfileForm from '../components/conta/ProfileForm.jsx'
@@ -28,6 +29,7 @@ export default function Conta() {
   const account = useAccount()
   const [tab, setTab] = useState('inicio')
   const [cancelFailed, setCancelFailed] = useState(false)
+  const [reviewing, setReviewing] = useState(null)
   const userId = account.session?.user.id
   const clientKey = account.role === 'client' ? userId : null
   const loadClient = useCallback(() => fetchMyClient(userId), [userId])
@@ -52,7 +54,7 @@ export default function Conta() {
   const titles = {
     inicio: firstName(client.data?.name) ? `Olá, ${firstName(client.data.name)}` : 'Olá',
     historico: 'Histórico',
-    perfil: 'Perfil',
+    perfil: 'Meu perfil',
   }
 
   return (
@@ -70,19 +72,26 @@ export default function Conta() {
         </Notice>
       ) : null}
       {tab === 'inicio' && appointments.data ? (
-        <ClientHome appointments={appointments.data} onCancel={cancel} />
+        <ClientHome appointments={appointments.data} onCancel={cancel} onReview={setReviewing} />
       ) : null}
       {tab === 'historico' && appointments.data ? (
-        <ClientHistory appointments={appointments.data} />
+        <ClientHistory appointments={appointments.data} onReview={setReviewing} />
       ) : null}
       {tab === 'perfil' && client.data ? (
         <>
-          <ProfileForm userId={userId} client={client.data} />
+          <ProfileForm userId={userId} client={client.data} onSaved={client.reload} />
           <PasswordForm />
           <AppButton variant="secondary" full onClick={signOut} style={{ marginTop: 24 }}>
             Sair
           </AppButton>
         </>
+      ) : null}
+      {reviewing ? (
+        <FeedbackModal
+          appointment={reviewing}
+          onDone={appointments.reload}
+          onClose={() => setReviewing(null)}
+        />
       ) : null}
     </AppShell>
   )

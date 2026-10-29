@@ -5,7 +5,7 @@ import AppointmentLine from './AppointmentLine.jsx'
 
 const plural = (count) => `${count} ${count === 1 ? 'atendimento' : 'atendimentos'}`
 
-export default function ClientHistory({ appointments }) {
+export default function ClientHistory({ appointments, onReview }) {
   const month = monthOf(todayIso())
   const { past } = split(appointments)
   const thisMonth = spending(appointments, month)
@@ -26,7 +26,7 @@ export default function ClientHistory({ appointments }) {
           <h2 className="app-label">Histórico</h2>
           <ul className="app-group">
             {past.map((appointment) => (
-              <AppointmentLine key={appointment.id} appointment={appointment} />
+              <AppointmentLine key={appointment.id} appointment={appointment} onReview={onReview} />
             ))}
           </ul>
         </>

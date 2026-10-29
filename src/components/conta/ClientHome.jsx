@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom'
 import { lastWorth, split } from '../../lib/clientAppointments.js'
+import AppButton from '../app/AppButton.jsx'
 import AppointmentLine from './AppointmentLine.jsx'
 import NextAppointment from './NextAppointment.jsx'
 
-export default function ClientHome({ appointments, onCancel }) {
+export default function ClientHome({ appointments, onCancel, onReview }) {
   const { upcoming, past } = split(appointments)
   const [next, ...others] = upcoming
   const last = lastWorth(past)
   const lastType = last?.service_types
   const lastPro = lastType?.services.professionals
+  const toReview = past.find(({ status, feedback }) => status === 'done' && !feedback)
 
   return (
     <>
@@ -18,19 +20,34 @@ export default function ClientHome({ appointments, onCancel }) {
         <p className="app-lead">Você não tem horários marcados.</p>
       )}
 
-      {lastType ? (
-        <Link className="app-btn primary full app-rebook" to={`/agendar?tipo=${lastType.id}`}>
-          <span>
-            Agendar de novo
-            <small>
-              {lastType.name} com a {lastPro.name.split(' ')[0]}
-            </small>
-          </span>
-        </Link>
+      {toReview ? (
+        <section className="app-ask">
+          <h2 className="app-title">Como foi o seu atendimento?</h2>
+          <p className="app-help">
+            {toReview.service_types.name} com a{' '}
+            {toReview.service_types.services.professionals.name.split(' ')[0]}
+          </p>
+          <AppButton full variant="secondary" onClick={() => onReview(toReview)}>
+            Dar a minha opinião
+          </AppButton>
+        </section>
       ) : null}
-      <Link className="app-btn secondary full app-spaced" to="/agendar">
-        {lastType ? 'Agendar outro serviço' : 'Agendar um horário'}
-      </Link>
+
+      <div className="app-actions app-spaced">
+        {lastType ? (
+          <Link className="app-btn primary full app-rebook" to={`/agendar?tipo=${lastType.id}`}>
+            <span>
+              Agendar de novo
+              <small>
+                {lastType.name} com a {lastPro.name.split(' ')[0]}
+              </small>
+            </span>
+          </Link>
+        ) : null}
+        <Link className="app-btn secondary full" to="/agendar">
+          {lastType ? 'Agendar outro serviço' : 'Agendar um horário'}
+        </Link>
+      </div>
 
       {others.length ? (
         <section>
