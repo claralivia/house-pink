@@ -15,8 +15,8 @@ const handleOf = (value) =>
     .replace(/[/?].*$/, '')
 
 export default function MyProfile({ userId, professional, onSaved }) {
-  const [bio, setBio] = useState(professional.bio)
-  const [instagram, setInstagram] = useState(professional.instagram)
+  const [bio, setBio] = useState(professional.bio ?? '')
+  const [instagram, setInstagram] = useState(professional.instagram ?? '')
   const [photoState, setPhotoState] = useState('idle')
   const [result, setResult] = useState(null)
 
