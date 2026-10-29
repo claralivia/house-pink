@@ -76,6 +76,8 @@ create table appointments (
   status appointment_status not null default 'pending',
   price_cents integer check (price_cents >= 0),
   payment payment_method,
+  deposit_paid_cents integer not null default 0 check (deposit_paid_cents >= 0),
+  deposit_payment payment_method,
   notes text,
   created_at timestamptz not null default now(),
   check (ends_at > starts_at),
@@ -300,3 +302,34 @@ create policy service_photos_insert on storage.objects for insert to authenticat
 
 create policy service_photos_update on storage.objects for update to authenticated
   using (bucket_id = 'service-photos' and current_professional_id() is not null);
+
+-- As profissionais editam só o prazo, o sinal e as regras do próprio perfil.
+revoke update on professionals from authenticated;
+grant update (booking_window_days, deposit_cents, booking_notes) on professionals to authenticated;
+
+create function set_working_hours(p_hours jsonb) returns void
+language plpgsql security definer set search_path = public as $$
+declare
+  v_professional uuid := current_professional_id();
+  v_item jsonb;
+begin
+  if v_professional is null then
+    raise exception 'Sem permissão' using errcode = 'P0001';
+  end if;
+
+  delete from working_hours where professional_id = v_professional;
+
+  for v_item in select * from jsonb_array_elements(p_hours) loop
+    insert into working_hours (professional_id, weekday, starts_at, ends_at)
+    values (
+      v_professional,
+      (v_item ->> 'weekday')::smallint,
+      (v_item ->> 'starts_at')::time,
+      (v_item ->> 'ends_at')::time
+    );
+  end loop;
+end;
+$$;
+
+revoke all on function set_working_hours from public;
+grant execute on function set_working_hours to authenticated;

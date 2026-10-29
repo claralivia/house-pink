@@ -117,3 +117,21 @@ update professionals p
 set user_id = u.id
 from auth.users u
 where lower(u.email) = lower(p.email) and p.user_id is null;
+
+-- Fotos da Herlany, recortadas do catálogo dela (public/img/servicos).
+update service_types st set image_url = '/img/servicos/' || v.file || '.jpg'
+from services sv, professionals p, (values
+  ('Brasileiro Express', 'brasileiro-express'),
+  ('Volume Brasileiro', 'volume-brasileiro'),
+  ('Volume 5D', 'volume-5d'),
+  ('Volume Moderado', 'volume-moderado'),
+  ('Fox Eyes', 'fox-eyes'),
+  ('Volume Russo', 'volume-russo'),
+  ('Mega Volume', 'mega-volume'),
+  ('Lash lifting', 'lash-lifting'),
+  ('Remoção completa', 'remocao'),
+  ('Design de sobrancelha', 'design-sobrancelha'),
+  ('Design com henna', 'design-henna'),
+  ('Brow lamination', 'brow-lamination')
+) as v (name, file)
+where st.service_id = sv.id and sv.professional_id = p.id and p.key = 'herlany' and st.name = v.name;
