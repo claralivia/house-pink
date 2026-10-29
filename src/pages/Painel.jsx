@@ -1,15 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Navigate } from 'react-router-dom'
-import AppButton from '../components/app/AppButton.jsx'
 import AppShell from '../components/app/AppShell.jsx'
 import Notice from '../components/app/Notice.jsx'
 import TabBar from '../components/app/TabBar.jsx'
 import Earnings from '../components/painel/Earnings.jsx'
 import OwnServices from '../components/painel/OwnServices.jsx'
 import AgendaList from '../components/painel/AgendaList.jsx'
-import Reviews from '../components/painel/Reviews.jsx'
-import Settings from '../components/painel/Settings.jsx'
-import PasswordForm from '../components/painel/PasswordForm.jsx'
+import Clients from '../components/painel/Clients.jsx'
+import More from '../components/painel/More.jsx'
 import { PAGE_TITLES, PROS } from '../data/site.js'
 import { useAccount } from '../hooks/useAccount.js'
 import { useAsync } from '../hooks/useAsync.js'
@@ -18,16 +16,15 @@ import {
   fetchAgenda,
   setAppointmentPayment,
   setAppointmentStatus,
-  signOut,
   updateAppointment,
 } from '../lib/api.js'
 
 const TABS = [
   { id: 'agenda', label: 'Agenda', icon: 'cal' },
+  { id: 'clientes', label: 'Clientes', icon: 'user' },
   { id: 'ganhos', label: 'Ganhos', icon: 'wallet' },
   { id: 'servicos', label: 'Serviços', icon: 'list' },
-  { id: 'avaliacoes', label: 'Avaliações', icon: 'star' },
-  { id: 'ajustes', label: 'Ajustes', icon: 'user' },
+  { id: 'mais', label: 'Mais', icon: 'more' },
 ]
 
 export default function Painel() {
@@ -125,22 +122,20 @@ export default function Painel() {
           {professional ? <OwnServices professionalId={professional.id} /> : null}
         </>
       ) : null}
-      {tab === 'avaliacoes' ? (
+      {tab === 'clientes' ? (
         <>
-          <h1 className="app-headline">Avaliações</h1>
-          {professional ? <Reviews professional={professional} /> : null}
+          <h1 className="app-headline">Clientes</h1>
+          {professional ? (
+            <Clients professional={professional} onAppointmentSaved={agenda.reload} />
+          ) : null}
         </>
       ) : null}
-      {tab === 'ajustes' ? (
-        <>
-          <h1 className="app-headline">Ajustes</h1>
-          {account.session ? <p className="app-lead">{account.session.user.email}</p> : null}
-          {professional ? <Settings professional={professional} onSaved={account.reload} /> : null}
-          <PasswordForm />
-          <AppButton variant="secondary" full onClick={signOut} style={{ marginTop: 24 }}>
-            Sair
-          </AppButton>
-        </>
+      {tab === 'mais' && professional ? (
+        <More
+          professional={professional}
+          email={account.session?.user.email}
+          onSaved={account.reload}
+        />
       ) : null}
     </AppShell>
   )

@@ -277,13 +277,27 @@ export const uploadClientPhoto = async (userId, clientId, file) => {
 }
 
 export const fetchKnownClients = async () =>
-  unwrap(await supabase.from('clients').select('id, name, whatsapp, photo_url').order('name'))
+  unwrap(
+    await supabase.from('clients').select('id, name, whatsapp, photo_url, user_id').order('name'),
+  )
 
 export const createManualAppointment = async ({ serviceTypeId, startsAt, name, whatsapp }) =>
   unwrap(
     await supabase.rpc('create_appointment_for_client', {
       p_service_type: serviceTypeId,
       p_starts_at: startsAt,
+      p_name: name,
+      p_whatsapp: whatsapp,
+    }),
+  )
+
+export const addClients = async (clients) =>
+  unwrap(await supabase.rpc('add_clients', { p_clients: clients }))
+
+export const updateClientRecord = async (id, { name, whatsapp }) =>
+  unwrap(
+    await supabase.rpc('update_client_record', {
+      p_client: id,
       p_name: name,
       p_whatsapp: whatsapp,
     }),

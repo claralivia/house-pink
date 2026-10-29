@@ -14,12 +14,12 @@ import Select from '../app/Select.jsx'
 const CONFLICT_CODE = '23P01'
 const localNumber = (whatsapp) => whatsapp.replace(/^55/, '')
 
-export default function NewAppointment({ pro, date, onSaved, onClose }) {
+export default function NewAppointment({ pro, date, client, onSaved, onClose }) {
   const loadTypes = useCallback(() => fetchOwnTypes(pro.id), [pro.id])
   const types = useAsync(loadTypes, pro.id)
   const known = useAsync(fetchKnownClients, pro.id)
-  const [name, setName] = useState('')
-  const [whatsapp, setWhatsapp] = useState('')
+  const [name, setName] = useState(client?.name ?? '')
+  const [whatsapp, setWhatsapp] = useState(client ? localNumber(client.whatsapp) : '')
   const [typeId, setTypeId] = useState('')
   const [day, setDay] = useState(date)
   const [time, setTime] = useState('')
