@@ -33,7 +33,7 @@ export default function WhoScreen({
   return (
     <>
       <BackButton onClick={onBack}>Data e horário</BackButton>
-      <p className="app-step">Passo 4 de 4</p>
+      <p className="app-step">Passo 3 de 3</p>
       <h1 className="app-headline">Seus dados</h1>
       <BookingSummary choice={choice} date={date} minutes={minutes} />
       <BookingNotes pro={choice.pro} />

@@ -1,9 +1,10 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import AppShell from '../components/app/AppShell.jsx'
 import Notice from '../components/app/Notice.jsx'
+import CatalogScreen from '../components/agendar/CatalogScreen.jsx'
+import AccessScreen from '../components/agendar/AccessScreen.jsx'
 import Confirmation from '../components/agendar/Confirmation.jsx'
-import ServiceScreen from '../components/agendar/ServiceScreen.jsx'
-import TypeScreen from '../components/agendar/TypeScreen.jsx'
 import WhenScreen from '../components/agendar/WhenScreen.jsx'
 import WhoScreen from '../components/agendar/WhoScreen.jsx'
 import AppButton from '../components/app/AppButton.jsx'
@@ -17,34 +18,43 @@ import { bookingErrorMessage, createAppointment, fetchMyClient } from '../lib/ap
 import { timestamp } from '../lib/dates.js'
 import { whatsappUrl } from '../lib/links.js'
 
+const findType = (catalog, typeId) =>
+  catalog
+    ?.flatMap((pro) => pro.services.map((service) => ({ pro, service })))
+    .flatMap(({ pro, service }) =>
+      service.service_types
+        .filter((type) => type.id === typeId)
+        .map((type) => ({ pro, service, type })),
+    )[0] ?? null
+
 export default function Agendar() {
   usePageTitle(PAGE_TITLES.agendar)
 
+  const [params] = useSearchParams()
   const catalog = useCatalog()
   const account = useAccount()
   const userId = account.session?.user.id
   const loadClient = useCallback(() => fetchMyClient(userId), [userId])
   const signedIn = Boolean(account.session)
   const myClient = useAsync(loadClient, account.role === 'client' ? userId : null)
-  const [step, setStep] = useState('service')
-  const [choice, setChoice] = useState(null)
+  const preset = useMemo(() => findType(catalog.data, params.get('tipo')), [catalog.data, params])
+
+  const [picked, setPicked] = useState(null)
+  const [stepName, setStepName] = useState(null)
   const [date, setDate] = useState(null)
   const [minutes, setMinutes] = useState(null)
   const [submitting, setSubmitting] = useState(false)
   const [notice, setNotice] = useState(null)
   const [booking, setBooking] = useState(null)
+  const [guest, setGuest] = useState(false)
 
-  const availability = useAvailability(choice?.pro, choice?.type?.duration_minutes ?? 0)
+  const choice = picked ?? preset
+  const step = stepName ?? (preset ? 'when' : 'catalog')
+  const needsAccess = !account.loading && !signedIn && !guest && !preset && !booking
+  const availability = useAvailability(choice?.pro, choice?.type.duration_minutes ?? 0)
 
-  const pickService = (pro, service) => {
-    setChoice({ pro, service, type: null })
-    setDate(null)
-    setMinutes(null)
-    setStep('type')
-  }
-
-  const pickType = (type) => {
-    setChoice((current) => ({ ...current, type }))
+  const pick = (next) => {
+    setPicked(next)
     setDate(null)
     setMinutes(null)
   }
@@ -56,12 +66,12 @@ export default function Agendar() {
   }
 
   const restart = () => {
-    setChoice(null)
+    setPicked(null)
     setDate(null)
     setMinutes(null)
     setNotice(null)
     setBooking(null)
-    setStep('service')
+    setStepName('catalog')
   }
 
   const submit = async (client) => {
@@ -77,58 +87,54 @@ export default function Agendar() {
       setNotice(bookingErrorMessage(failure))
       setMinutes(null)
       availability.reload()
-      setStep('when')
+      setStepName('when')
     } finally {
       setSubmitting(false)
     }
   }
 
   const screens = {
-    service: catalog.data ? (
-      <ServiceScreen catalog={catalog.data} signedIn={signedIn} onPick={pickService} />
-    ) : null,
-    type: choice ? (
-      <TypeScreen
+    catalog: catalog.data ? (
+      <CatalogScreen
+        catalog={catalog.data}
         signedIn={signedIn}
-        choice={choice}
-        onBack={() => setStep('service')}
-        onPick={pickType}
-        onNext={() => setStep('when')}
+        selected={choice}
+        onPick={pick}
+        onNext={() => setStepName('when')}
       />
     ) : null,
-    when: choice?.type ? (
+    when: choice ? (
       <WhenScreen
         choice={choice}
         availability={availability}
         date={date}
         minutes={minutes}
         notice={notice}
-        onBack={() => setStep('type')}
+        onBack={() => setStepName('catalog')}
         onDate={pickDate}
         onMinutes={setMinutes}
-        onNext={() => setStep('who')}
+        onNext={() => setStepName('who')}
       />
     ) : null,
     who:
-      choice?.type && minutes !== null ? (
+      choice && minutes !== null ? (
         <WhoScreen
           choice={choice}
           date={date}
           minutes={minutes}
           submitting={submitting}
           initial={myClient.data}
-          onBack={() => setStep('when')}
+          onBack={() => setStepName('when')}
           onSubmit={submit}
         />
       ) : null,
   }
 
   return (
-    <AppShell
-      credit={!booking && step === 'service'}
-      withBar={Boolean(booking) || step !== 'service'}
-    >
-      {booking ? <Confirmation booking={booking} onRestart={restart} /> : screens[step]}
+    <AppShell withBar>
+      {needsAccess ? <AccessScreen onGuest={() => setGuest(true)} /> : null}
+      {!needsAccess && booking ? <Confirmation booking={booking} onRestart={restart} /> : null}
+      {!needsAccess && !booking ? screens[step] : null}
       {catalog.loading ? <p className="app-lead">Carregando...</p> : null}
       {catalog.error ? (
         <>
