@@ -1864,3 +1864,21 @@ img.app-avatar.pro {
   display: grid;
   min-width: 0;
 }
+.app-foot-help {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline;
+}
+.app-lesson-video {
+  width: 100%;
+  margin-top: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--ink);
+}
+.app-lesson-steps {
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+.app-lesson-seen {
+  color: var(--success);
+}

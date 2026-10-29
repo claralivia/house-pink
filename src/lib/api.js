@@ -299,6 +299,16 @@ export const uploadClientPhoto = async (userId, clientId, file) => {
   unwrap(await supabase.from('clients').update({ photo_url: data.publicUrl }).eq('id', clientId))
 }
 
+const HELP_BUCKETS = { pro: 'help-pro', client: 'help-public' }
+const SIGNED_SECONDS = 3600
+
+// Vídeo da aula: o das clientes é público; o das profissionais só abre com login de profissional.
+export const fetchHelpVideo = async (audience, file) => {
+  const bucket = supabase.storage.from(HELP_BUCKETS[audience])
+  if (audience === 'client') return bucket.getPublicUrl(file).data.publicUrl
+  return unwrap(await bucket.createSignedUrl(file, SIGNED_SECONDS)).signedUrl
+}
+
 export const uploadProfessionalPhoto = async (userId, professionalId, file) => {
   const extension = file.name.split('.').pop().toLowerCase()
   const path = `${userId}/pro-${Date.now()}.${extension}`

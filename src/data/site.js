@@ -49,4 +49,5 @@ export const PAGE_TITLES = {
   redefinir: `Senha nova | ${SALON.name}`,
   conta: `Minha conta | ${SALON.name}`,
   painel: `Agenda | ${SALON.name}`,
+  ajuda: `Ajuda | ${SALON.name}`,
 }

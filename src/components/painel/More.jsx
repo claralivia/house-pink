@@ -3,6 +3,7 @@ import { signOut } from '../../lib/api.js'
 import AppButton from '../app/AppButton.jsx'
 import BackButton from '../app/BackButton.jsx'
 import Icon from '../app/Icon.jsx'
+import HelpCenter from '../ajuda/HelpCenter.jsx'
 import MyProfile from './MyProfile.jsx'
 import PasswordForm from './PasswordForm.jsx'
 import Reviews from './Reviews.jsx'
@@ -20,6 +21,7 @@ const ITEMS = [
     title: 'Ajustes da agenda',
     text: 'Dias à frente, horários, folgas, sinal e regras',
   },
+  { id: 'aulas', title: 'Aulas', text: 'Aprenda a usar o painel, passo a passo' },
   { id: 'conta', title: 'Minha conta', text: 'Trocar a senha e sair' },
 ]
 
@@ -54,6 +56,7 @@ export default function More({ professional, userId, email, onSaved }) {
         </>
       )}
 
+      {view === 'aulas' ? <HelpCenter audience="pro" /> : null}
       {view === 'perfil' ? (
         <MyProfile userId={userId} professional={professional} onSaved={onSaved} />
       ) : null}

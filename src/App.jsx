@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home.jsx'
+import Ajuda from './pages/Ajuda.jsx'
 import Agendar from './pages/Agendar.jsx'
 import Cadastro from './pages/Cadastro.jsx'
 import Conta from './pages/Conta.jsx'
@@ -17,6 +18,7 @@ export default function App() {
       <Route path="/cadastro" element={<Cadastro />} />
       <Route path="/conta" element={<Conta />} />
       <Route path="/painel" element={<Painel />} />
+      <Route path="/ajuda" element={<Ajuda />} />
       <Route path="/recuperar" element={<Recuperar />} />
       <Route path="/redefinir-senha" element={<RedefinirSenha />} />
       <Route path="*" element={<Home />} />

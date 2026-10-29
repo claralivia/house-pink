@@ -527,3 +527,11 @@ alter table professionals add column bio text;
 alter table professionals add column photo_url text;
 alter table professionals add column instagram text;
 grant update (bio, photo_url, instagram) on professionals to authenticated;
+
+-- Vídeos das aulas: os das clientes são públicos; os das profissionais só abrem para quem é profissional.
+insert into storage.buckets (id, name, public)
+values ('help-public', 'help-public', true), ('help-pro', 'help-pro', false)
+on conflict (id) do nothing;
+
+create policy help_pro_read on storage.objects for select to authenticated
+  using (bucket_id = 'help-pro' and current_professional_id() is not null);
