@@ -171,7 +171,7 @@ export const fetchOwnTypes = async (professionalId) =>
 export const uploadTypePhoto = async (typeId, file) => {
   const extension = file.name.split('.').pop().toLowerCase()
   const path = `${typeId}-${Date.now()}.${extension}`
-  unwrap(await supabase.storage.from('service-photos').upload(path, file, { upsert: true }))
+  unwrap(await supabase.storage.from('service-photos').upload(path, file))
   const { data } = supabase.storage.from('service-photos').getPublicUrl(path)
   unwrap(
     await supabase.from('service_types').update({ image_url: data.publicUrl }).eq('id', typeId),
@@ -271,7 +271,7 @@ export const fetchFeedback = async (professionalId) =>
 export const uploadClientPhoto = async (userId, clientId, file) => {
   const extension = file.name.split('.').pop().toLowerCase()
   const path = `${userId}/avatar-${Date.now()}.${extension}`
-  unwrap(await supabase.storage.from('profile-photos').upload(path, file, { upsert: true }))
+  unwrap(await supabase.storage.from('profile-photos').upload(path, file))
   const { data } = supabase.storage.from('profile-photos').getPublicUrl(path)
   unwrap(await supabase.from('clients').update({ photo_url: data.publicUrl }).eq('id', clientId))
 }
