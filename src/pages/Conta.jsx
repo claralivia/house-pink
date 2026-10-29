@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import AppButton from '../components/app/AppButton.jsx'
 import AppShell from '../components/app/AppShell.jsx'
+import Greeting from '../components/app/Greeting.jsx'
 import Notice from '../components/app/Notice.jsx'
 import TabBar from '../components/app/TabBar.jsx'
 import FeedbackModal from '../components/conta/FeedbackModal.jsx'
@@ -20,8 +21,6 @@ const TABS = [
   { id: 'historico', label: 'Histórico', icon: 'list' },
   { id: 'perfil', label: 'Perfil', icon: 'user' },
 ]
-
-const firstName = (name) => name?.trim().split(' ')[0]
 
 export default function Conta() {
   usePageTitle(PAGE_TITLES.conta)
@@ -51,15 +50,15 @@ export default function Conta() {
 
   const failed = client.error || appointments.error
   const loading = account.loading || client.loading || appointments.loading
-  const titles = {
-    inicio: firstName(client.data?.name) ? `Olá, ${firstName(client.data.name)}` : 'Olá',
-    historico: 'Histórico',
-    perfil: 'Meu perfil',
-  }
+  const titles = { historico: 'Histórico', perfil: 'Meu perfil' }
 
   return (
     <AppShell hideAccount withBar bottom={<TabBar tabs={TABS} current={tab} onChange={setTab} />}>
-      <h1 className="app-headline">{titles[tab]}</h1>
+      {tab === 'inicio' ? (
+        <Greeting person={account.person}>O que você deseja fazer hoje?</Greeting>
+      ) : (
+        <h1 className="app-headline">{titles[tab]}</h1>
+      )}
       {loading ? <p className="app-lead">Carregando...</p> : null}
       {failed ? (
         <Notice tone="danger" title="Não foi possível carregar a sua conta">
@@ -79,7 +78,14 @@ export default function Conta() {
       ) : null}
       {tab === 'perfil' && client.data ? (
         <>
-          <ProfileForm userId={userId} client={client.data} onSaved={client.reload} />
+          <ProfileForm
+            userId={userId}
+            client={client.data}
+            onSaved={() => {
+              client.reload()
+              account.reloadClient()
+            }}
+          />
           <PasswordForm />
           <AppButton variant="secondary" full onClick={signOut} style={{ marginTop: 24 }}>
             Sair

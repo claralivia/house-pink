@@ -17,7 +17,11 @@ export default function CatalogScreen({ catalog, signedIn, selected, onPick, onN
     <>
       <p className="app-step">Passo 1 de 3</p>
       <h1 className="app-headline">O que você quer fazer?</h1>
-      <p className="app-lead">Sem criar conta: só o seu nome e o seu WhatsApp.</p>
+      <p className="app-lead">
+        {signedIn
+          ? 'Escolha o serviço e veja os valores.'
+          : 'Sem criar conta: só o seu nome e o seu WhatsApp.'}
+      </p>
 
       <div className="app-filter" role="group" aria-label="Filtrar serviços">
         {[{ id: 'all', name: 'Todos' }, ...services.map(({ service }) => service)].map((option) => (

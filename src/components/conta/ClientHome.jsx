@@ -44,7 +44,7 @@ export default function ClientHome({ appointments, onCancel, onReview }) {
             </span>
           </Link>
         ) : null}
-        <Link className="app-btn secondary full" to="/agendar">
+        <Link className={`app-btn ${lastType ? 'secondary' : 'primary'} full`} to="/agendar">
           {lastType ? 'Agendar outro serviço' : 'Agendar um horário'}
         </Link>
       </div>

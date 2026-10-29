@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import AppShell from '../components/app/AppShell.jsx'
+import Greeting from '../components/app/Greeting.jsx'
 import Notice from '../components/app/Notice.jsx'
 import TabBar from '../components/app/TabBar.jsx'
 import Earnings from '../components/painel/Earnings.jsx'
@@ -12,6 +13,7 @@ import { PAGE_TITLES, PROS } from '../data/site.js'
 import { useAccount } from '../hooks/useAccount.js'
 import { useAsync } from '../hooks/useAsync.js'
 import { usePageTitle } from '../hooks/usePageTitle.js'
+import { dateOf, todayIso } from '../lib/dates.js'
 import {
   fetchAgenda,
   setAppointmentPayment,
@@ -72,6 +74,15 @@ export default function Painel() {
     agenda.reload()
   }
 
+  const today = todayIso()
+  const todayCount = (agenda.data ?? []).filter(
+    ({ starts_at, status }) =>
+      dateOf(starts_at) === today && (status === 'pending' || status === 'confirmed'),
+  ).length
+  const todaySummary = todayCount
+    ? `Hoje você tem ${todayCount} ${todayCount === 1 ? 'atendimento' : 'atendimentos'}.`
+    : 'Hoje você não tem atendimentos marcados.'
+
   const agendaView = () => {
     if (account.loading || agenda.loading) return <p className="app-lead">Carregando...</p>
     if (agenda.error)
@@ -100,13 +111,7 @@ export default function Painel() {
     >
       {tab === 'agenda' ? (
         <>
-          <h1 className="app-headline">Agenda</h1>
-          {professional ? (
-            <p className="app-lead">
-              <span className={`app-who ${professional.key}`}>{professional.first}</span> · próximos
-              horários
-            </p>
-          ) : null}
+          <Greeting person={account.person}>{todaySummary}</Greeting>
           {agendaView()}
         </>
       ) : null}
