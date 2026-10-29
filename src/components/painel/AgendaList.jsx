@@ -12,6 +12,8 @@ import {
 } from '../../lib/dates.js'
 import { formatPrice } from '../../lib/money.js'
 import Icon from '../app/Icon.jsx'
+import AppButton from '../app/AppButton.jsx'
+import NewAppointment from './NewAppointment.jsx'
 import AppointmentRow from './AppointmentRow.jsx'
 import AppointmentSheet from './AppointmentSheet.jsx'
 import WeekView from './WeekView.jsx'
@@ -31,6 +33,7 @@ export default function AgendaList({ appointments, pro, onStatus, onPay, onDepos
   const [selected, setSelected] = useState(today)
   const [weekFrom, setWeekFrom] = useState(weekStart(today))
   const [openId, setOpenId] = useState(null)
+  const [creating, setCreating] = useState(false)
 
   const days = dateRange(today, Math.max(MIN_DAYS, pro.booking_window_days ?? 0))
   const byDay = Object.groupBy(appointments, ({ starts_at }) => dateOf(starts_at))
@@ -42,6 +45,11 @@ export default function AgendaList({ appointments, pro, onStatus, onPay, onDepos
 
   return (
     <>
+      <AppButton full onClick={() => setCreating(true)}>
+        <Icon name="plus" />
+        Novo horário
+      </AppButton>
+
       <div className="app-methods three two" role="group" aria-label="Como ver a agenda">
         {MODES.map(({ id, label }) => (
           <button
@@ -138,6 +146,15 @@ export default function AgendaList({ appointments, pro, onStatus, onPay, onDepos
           <WeekView appointments={appointments} start={weekFrom} today={today} onOpen={setOpenId} />
         </>
       )}
+
+      {creating ? (
+        <NewAppointment
+          pro={pro}
+          date={mode === 'day' ? selected : today}
+          onSaved={onChanged}
+          onClose={() => setCreating(false)}
+        />
+      ) : null}
 
       {current ? (
         <AppointmentSheet

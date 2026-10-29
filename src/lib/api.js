@@ -71,7 +71,11 @@ export const signUp = async ({ email, password, name, whatsapp }) =>
 
 export const fetchMyClient = async (userId) =>
   unwrap(
-    await supabase.from('clients').select('id, name, whatsapp').eq('user_id', userId).maybeSingle(),
+    await supabase
+      .from('clients')
+      .select('id, name, whatsapp, photo_url')
+      .eq('user_id', userId)
+      .maybeSingle(),
   )
 
 export const updateMyClient = async (userId, { name, whatsapp }) =>
@@ -82,7 +86,7 @@ export const fetchMyAppointments = async () =>
     await supabase
       .from('appointments')
       .select(
-        'id, starts_at, ends_at, status, price_cents, service_types(id, name, services(name, professionals(key, name, booking_notes)))',
+        'id, starts_at, ends_at, status, price_cents, service_types(id, name, services(name, professionals(key, name, booking_notes))), feedback(rating, comment)',
       )
       .order('starts_at', { ascending: false }),
   )
@@ -120,7 +124,7 @@ export const fetchAgenda = async (professionalId) =>
     await supabase
       .from('appointments')
       .select(
-        'id, starts_at, ends_at, status, price_cents, deposit_paid_cents, deposit_payment, clients(name, whatsapp), service_types(name, services(name))',
+        'id, starts_at, ends_at, status, price_cents, deposit_paid_cents, deposit_payment, clients(name, whatsapp, photo_url), service_types(name, services(name))',
       )
       .eq('professional_id', professionalId)
       .gte('starts_at', timestamp(addDays(weekStart(todayIso()), -28), 0))
@@ -243,3 +247,44 @@ export const addType = async (serviceId, { name, duration_minutes, price_cents }
 
 export const updateAppointment = async (id, patch) =>
   unwrap(await supabase.from('appointments').update(patch).eq('id', id))
+
+export const leaveFeedback = async (appointmentId, rating, comment) =>
+  unwrap(
+    await supabase.rpc('leave_feedback', {
+      p_appointment: appointmentId,
+      p_rating: rating,
+      p_comment: comment,
+    }),
+  )
+
+export const fetchFeedback = async (professionalId) =>
+  unwrap(
+    await supabase
+      .from('feedback')
+      .select(
+        'id, rating, comment, created_at, clients(name, photo_url), appointments(starts_at, service_types(name))',
+      )
+      .eq('professional_id', professionalId)
+      .order('created_at', { ascending: false }),
+  )
+
+export const uploadClientPhoto = async (userId, clientId, file) => {
+  const extension = file.name.split('.').pop().toLowerCase()
+  const path = `${userId}/avatar-${Date.now()}.${extension}`
+  unwrap(await supabase.storage.from('profile-photos').upload(path, file, { upsert: true }))
+  const { data } = supabase.storage.from('profile-photos').getPublicUrl(path)
+  unwrap(await supabase.from('clients').update({ photo_url: data.publicUrl }).eq('id', clientId))
+}
+
+export const fetchKnownClients = async () =>
+  unwrap(await supabase.from('clients').select('id, name, whatsapp, photo_url').order('name'))
+
+export const createManualAppointment = async ({ serviceTypeId, startsAt, name, whatsapp }) =>
+  unwrap(
+    await supabase.rpc('create_appointment_for_client', {
+      p_service_type: serviceTypeId,
+      p_starts_at: startsAt,
+      p_name: name,
+      p_whatsapp: whatsapp,
+    }),
+  )

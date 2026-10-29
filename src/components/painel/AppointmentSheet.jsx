@@ -4,6 +4,7 @@ import { dateOf, longDate, timeOf } from '../../lib/dates.js'
 import { whatsappUrl } from '../../lib/links.js'
 import { formatPrice } from '../../lib/money.js'
 import AppButton from '../app/AppButton.jsx'
+import Avatar from '../app/Avatar.jsx'
 import Modal from '../app/Modal.jsx'
 import EditAppointment from './EditAppointment.jsx'
 
@@ -58,7 +59,10 @@ export default function AppointmentSheet({
   return (
     <Modal title={clients.name} onClose={onClose}>
       <p className="app-step">{STATUS_TEXT[status]}</p>
-      <h2 className="app-modal-name">{clients.name}</h2>
+      <div className="app-modal-person">
+        <Avatar src={clients.photo_url} name={clients.name} size="xl" />
+        <h2 className="app-modal-name">{clients.name}</h2>
+      </div>
       <p className="app-modal-when">
         {longDate(dateOf(starts_at))}, das {timeOf(starts_at)} às {timeOf(ends_at)}
       </p>

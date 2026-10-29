@@ -1550,3 +1550,179 @@
   font-weight: 700;
   line-height: 18px;
 }
+.app-avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--surface-sunken);
+  color: var(--ink);
+  font:
+    700 15px/1 'Syne',
+    sans-serif;
+  object-fit: cover;
+}
+.app-avatar.lg {
+  width: 64px;
+  height: 64px;
+  font-size: 20px;
+}
+.app-avatar.xl {
+  width: 88px;
+  height: 88px;
+  font-size: 26px;
+}
+img.app-avatar.pro {
+  transform: scale(1.18);
+}
+.app-next-who {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+.app-next-who p {
+  display: grid;
+  gap: 2px;
+}
+.app-next-who span {
+  color: var(--ink-muted);
+}
+.app-next-status {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 22px;
+}
+.app-next-status.ok {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.app-next-status.wait {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+.app-next .app-actions {
+  margin-top: var(--space-4);
+}
+.app-ask {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.app-ask .app-title {
+  margin-top: 0;
+}
+.app-ask .app-btn {
+  margin-top: var(--space-3);
+}
+.app-line-end {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: end;
+}
+.app-line-end .app-btn {
+  min-height: 40px;
+  padding: 0 var(--space-3);
+  font-size: 14px;
+}
+.app-stars {
+  display: flex;
+  gap: 2px;
+  color: var(--border-control);
+}
+.app-stars .on {
+  color: var(--brand-bright);
+}
+.app-stars svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+.app-stars button {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 0;
+  background: none;
+  color: var(--border-control);
+  cursor: pointer;
+}
+.app-stars button.on {
+  color: var(--brand-bright);
+}
+.app-stars button svg {
+  width: 40px;
+  height: 40px;
+}
+.app-stars-word {
+  min-height: 20px;
+  margin-top: var(--space-1);
+}
+.app-profile-photo {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.app-profile-photo > div {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.app-profile-photo .app-upload {
+  display: flex;
+  margin-top: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  font-size: 15px;
+  cursor: pointer;
+}
+.app-modal-person {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  margin-top: var(--space-2);
+}
+.app-modal-person .app-modal-name {
+  margin-top: 0;
+}
+.app-field-label {
+  font:
+    600 14px/20px 'Figtree',
+    sans-serif;
+}
+.app-review {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+.app-review + .app-review {
+  border-top: 1px solid var(--border);
+}
+.app-review > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.app-review-text {
+  margin-top: var(--space-1);
+  line-height: 22px;
+}
+.app-btn svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
+}

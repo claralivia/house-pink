@@ -7,6 +7,7 @@ import TabBar from '../components/app/TabBar.jsx'
 import Earnings from '../components/painel/Earnings.jsx'
 import OwnServices from '../components/painel/OwnServices.jsx'
 import AgendaList from '../components/painel/AgendaList.jsx'
+import Reviews from '../components/painel/Reviews.jsx'
 import Settings from '../components/painel/Settings.jsx'
 import PasswordForm from '../components/painel/PasswordForm.jsx'
 import { PAGE_TITLES, PROS } from '../data/site.js'
@@ -25,6 +26,7 @@ const TABS = [
   { id: 'agenda', label: 'Agenda', icon: 'cal' },
   { id: 'ganhos', label: 'Ganhos', icon: 'wallet' },
   { id: 'servicos', label: 'Serviços', icon: 'list' },
+  { id: 'avaliacoes', label: 'Avaliações', icon: 'star' },
   { id: 'ajustes', label: 'Ajustes', icon: 'user' },
 ]
 
@@ -121,6 +123,12 @@ export default function Painel() {
         <>
           <h1 className="app-headline">Serviços</h1>
           {professional ? <OwnServices professionalId={professional.id} /> : null}
+        </>
+      ) : null}
+      {tab === 'avaliacoes' ? (
+        <>
+          <h1 className="app-headline">Avaliações</h1>
+          {professional ? <Reviews professional={professional} /> : null}
         </>
       ) : null}
       {tab === 'ajustes' ? (
