@@ -265,7 +265,7 @@ export const CLIENT_MODULES = [
         id: 'agendar-sem-conta',
         title: 'Agendar sem criar conta',
         summary: 'Só o seu nome e o seu WhatsApp.',
-        video: 'client-agendar-sem-conta-v1.mp4',
+        video: 'client-agendar-sem-conta-v2.mp4',
         steps: [
           'Toque em “Agendar” no site.',
           'Na pergunta “Como você quer continuar?”, escolha “Sou visitante”.',
@@ -274,6 +274,20 @@ export const CLIENT_MODULES = [
           'Digite o seu nome e o seu WhatsApp e toque em “Confirmar horário”.',
           'Pronto: o horário fica reservado. A profissional confirma com você pelo WhatsApp, porque alguns serviços dependem de sinal.',
           'Criar uma conta é recomendado: assim você acompanha os seus horários.',
+        ],
+      },
+      {
+        id: 'agendar-duas',
+        title: 'Agendar com as duas profissionais',
+        summary: 'Unhas e cílios na mesma visita, ao mesmo tempo.',
+        video: 'client-agendar-duas-v2.mp4',
+        steps: [
+          'No site, toque em “Agendar” e escolha “Sou visitante” (ou “Sou cliente”, se já tem conta).',
+          'Escolha um serviço de cada profissional: primeiro o das unhas e depois o dos cílios. Tocar de novo no serviço escolhido tira a escolha.',
+          'Embaixo aparecem os dois serviços escolhidos, ao mesmo tempo. Toque em “Escolher data e horário”.',
+          'O calendário mostra só os dias em que as duas atendem, e a lista traz só os horários em que as duas estão livres.',
+          'Escolha o horário, toque em “Continuar”, digite o seu nome e o seu WhatsApp e toque em “Confirmar horário”.',
+          'As duas reservas são feitas juntas. Depois, avise cada profissional pelo WhatsApp, e cada uma confirma o seu horário.',
         ],
       },
       {
