@@ -1,7 +1,7 @@
 export const SALON = {
   name: 'House Pink Nails & Lashes',
   instagram: 'housepinknl',
-  hours: 'Terça a sábado, das 9h30 às 17h30',
+  hours: 'Terça a sábado',
   address: {
     street: 'Rua Cruz Saldanha, 50, sala F',
     district: 'Parquelândia',

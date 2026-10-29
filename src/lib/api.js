@@ -20,7 +20,7 @@ export const fetchCatalog = async () =>
     await supabase
       .from('professionals')
       .select(
-        'id, key, name, booking_window_days, services(id, name, position, service_types(id, name, duration_minutes, position, service_prices(price_cents)))',
+        'id, key, name, booking_window_days, deposit_cents, booking_notes, services(id, name, position, service_types(id, name, description, duration_minutes, position, service_prices(price_cents)))',
       )
       .eq('services.active', true)
       .eq('services.service_types.active', true)

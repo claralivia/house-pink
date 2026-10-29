@@ -79,7 +79,7 @@ src/
 └── pages/               Home, Agendar, Entrar e Painel
 supabase/
 ├── schema.sql           tabelas, regras de segurança e funções
-└── seed.sql             profissionais, serviços, horários (terça a sábado, 9h30 às 17h30) e preços da Bruna; a Herlany ainda não tem preços
+└── seed.sql             profissionais, serviços, serviços, tipos e preços das duas, horários e regras de atendimento da Herlany
 ```
 
 ## Banco de dados
@@ -87,7 +87,7 @@ supabase/
 O esquema fica em `supabase/schema.sql` e deve ser rodado no SQL Editor do Supabase, seguido de `supabase/seed.sql`.
 
 - Cada profissional tem a própria agenda: o banco impede dois agendamentos sobrepostos para a mesma profissional, e a sessão conjunta roda em paralelo.
-- Os preços ficam em `service_prices`, legível só por quem está logado. Os preços da Bruna vêm da tabela dela; os da Herlany ainda não foram cadastrados e aparecem como "Valor a combinar" para quem está logada.
+- Os preços ficam em `service_prices`, legível só por quem está logado. Os preços vêm das tabelas das profissionais. As durações de todos os tipos ainda são provisórias (1 hora).
 - A cliente agenda pela função `create_appointment`, que confere janela de dias, folgas e expediente. Os horários ocupados saem por `busy_slots`, sem dados de clientes.
 - Cada profissional enxerga só a própria agenda e a própria receita, e é reconhecida pelo vínculo da conta (`professionals.user_id`).
 - Ao criar uma conta, um gatilho cria o perfil da cliente (`clients`), que passa a ser usado nos agendamentos feitos logada.

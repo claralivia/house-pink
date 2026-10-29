@@ -5,6 +5,7 @@ import AppButton from '../app/AppButton.jsx'
 import BackButton from '../app/BackButton.jsx'
 import BottomBar from '../app/BottomBar.jsx'
 import Field from '../app/Field.jsx'
+import BookingNotes from './BookingNotes.jsx'
 import BookingSummary from './BookingSummary.jsx'
 
 const FORM_ID = 'booking-form'
@@ -35,6 +36,7 @@ export default function WhoScreen({
       <p className="app-step">Passo 4 de 4</p>
       <h1 className="app-headline">Seus dados</h1>
       <BookingSummary choice={choice} date={date} minutes={minutes} />
+      <BookingNotes pro={choice.pro} />
       <form id={FORM_ID} onSubmit={handleSubmit}>
         <Field
           label="Nome completo"

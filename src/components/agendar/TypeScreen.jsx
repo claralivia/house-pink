@@ -27,6 +27,9 @@ export default function TypeScreen({ choice, signedIn, onBack, onPick, onNext })
             <span>
               <span className="app-item-name">{option.name}</span>
               <span className="app-item-meta">{formatDuration(option.duration_minutes)}</span>
+              {option.description ? (
+                <span className="app-item-meta app-item-about">{option.description}</span>
+              ) : null}
             </span>
             <span className="app-item-end">
               <PriceTag cents={option.service_prices?.price_cents} signedIn={signedIn} />

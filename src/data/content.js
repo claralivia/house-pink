@@ -25,7 +25,7 @@ export const SERVICES = [
     pro: PROS.herlany,
     image: '/img/cilios.webp',
     alt: 'Olho com cílios longos e volumosos',
-    text: 'Um olhar marcante, com técnica e cuidado do começo ao fim.',
+    text: 'Volume brasileiro, 5D, russo, mega volume, fox eyes e lash lifting, com acabamento impecável.',
     cta: 'Agendar cílios',
   },
   {
@@ -34,7 +34,7 @@ export const SERVICES = [
     pro: PROS.herlany,
     image: '/img/sobrancelha.webp',
     alt: 'Olho e sobrancelha bem definida',
-    text: 'Design que valoriza o seu rosto, fio a fio.',
+    text: 'Design, design com henna e brow lamination, para valorizar o seu rosto fio a fio.',
     cta: 'Agendar sobrancelhas',
   },
 ]
