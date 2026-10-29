@@ -1,3 +1,5 @@
+-- Os e-mails abaixo são exemplos. Antes de rodar, troque pelos e-mails reais das
+-- profissionais: é o e-mail que liga o login da profissional à agenda dela.
 insert into professionals (key, name, email, deposit_cents, booking_notes) values
   ('bruna', 'Bruna Ítala', 'bruna@exemplo.com', null, '{}'),
   (
