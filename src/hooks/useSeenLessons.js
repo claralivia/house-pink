@@ -13,8 +13,7 @@ export function useSeenLessons(audience) {
   const key = `house-pink-help-${audience}`
   const [seen, setSeen] = useState(() => read(key))
 
-  const toggle = (id) => {
-    const next = seen.includes(id) ? seen.filter((item) => item !== id) : [...seen, id]
+  const save = (next) => {
     setSeen(next)
     try {
       localStorage.setItem(key, JSON.stringify(next))
@@ -23,5 +22,9 @@ export function useSeenLessons(audience) {
     }
   }
 
-  return { seen, toggle }
+  return {
+    seen,
+    mark: (id) => save(seen.includes(id) ? seen : [...seen, id]),
+    unmark: (id) => save(seen.filter((item) => item !== id)),
+  }
 }

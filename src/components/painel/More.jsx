@@ -27,8 +27,8 @@ const ITEMS = [
 
 const TITLES = Object.fromEntries(ITEMS.map(({ id, title }) => [id, title]))
 
-export default function More({ professional, userId, email, onSaved }) {
-  const [view, setView] = useState('menu')
+export default function More({ start, professional, userId, email, onSaved }) {
+  const [view, setView] = useState(start)
 
   return (
     <>

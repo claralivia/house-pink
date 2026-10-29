@@ -4,6 +4,7 @@ import AppShell from '../components/app/AppShell.jsx'
 import Greeting from '../components/app/Greeting.jsx'
 import Notice from '../components/app/Notice.jsx'
 import TabBar from '../components/app/TabBar.jsx'
+import CourseNudge from '../components/ajuda/CourseNudge.jsx'
 import Earnings from '../components/painel/Earnings.jsx'
 import OwnServices from '../components/painel/OwnServices.jsx'
 import AgendaList from '../components/painel/AgendaList.jsx'
@@ -34,6 +35,7 @@ export default function Painel() {
 
   const account = useAccount()
   const [tab, setTab] = useState('agenda')
+  const [moreStart, setMoreStart] = useState('menu')
   const professional = useMemo(
     () => account.professional && { ...PROS[account.professional.key], ...account.professional },
     [account.professional],
@@ -49,6 +51,7 @@ export default function Painel() {
   }, [reloadAgenda])
 
   const changeTab = (next) => {
+    setMoreStart('menu')
     setTab(next)
     if (next === 'agenda') reloadAgenda()
   }
@@ -112,6 +115,12 @@ export default function Painel() {
       {tab === 'agenda' ? (
         <>
           <Greeting person={account.person}>{todaySummary}</Greeting>
+          <CourseNudge
+            onOpen={() => {
+              setMoreStart('aulas')
+              setTab('mais')
+            }}
+          />
           {agendaView()}
         </>
       ) : null}
@@ -137,6 +146,7 @@ export default function Painel() {
       ) : null}
       {tab === 'mais' && professional ? (
         <More
+          start={moreStart}
           professional={professional}
           userId={account.session?.user.id}
           email={account.session?.user.email}
