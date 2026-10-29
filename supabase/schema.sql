@@ -333,3 +333,114 @@ $$;
 
 revoke all on function set_working_hours from public;
 grant execute on function set_working_hours to authenticated;
+
+-- Foto de perfil da cliente, para a profissional saber quem é.
+alter table clients add column photo_url text;
+
+insert into storage.buckets (id, name, public)
+values ('profile-photos', 'profile-photos', true)
+on conflict (id) do nothing;
+
+create policy profile_photos_insert on storage.objects for insert to authenticated
+  with check (bucket_id = 'profile-photos' and (storage.foldername(name))[1] = auth.uid()::text);
+
+create policy profile_photos_update on storage.objects for update to authenticated
+  using (bucket_id = 'profile-photos' and (storage.foldername(name))[1] = auth.uid()::text);
+
+-- Avaliações: a cliente avalia um atendimento concluído; só a profissional dele e a própria cliente leem.
+create table feedback (
+  id uuid primary key default gen_random_uuid(),
+  appointment_id uuid not null unique references appointments (id) on delete cascade,
+  client_id uuid not null references clients (id) on delete cascade,
+  professional_id uuid not null references professionals (id) on delete cascade,
+  rating smallint not null check (rating between 1 and 5),
+  comment text,
+  created_at timestamptz not null default now()
+);
+
+alter table feedback enable row level security;
+
+create policy feedback_client_read on feedback for select using (is_own_client(client_id));
+create policy feedback_professional_read on feedback for select
+  using (professional_id = current_professional_id());
+
+create function leave_feedback(p_appointment uuid, p_rating integer, p_comment text) returns void
+language plpgsql security definer set search_path = public as $$
+declare
+  v_client uuid;
+  v_professional uuid;
+begin
+  select client_id, professional_id into v_client, v_professional
+  from appointments
+  where id = p_appointment and status = 'done' and is_own_client(client_id);
+
+  if v_client is null then
+    raise exception 'Só é possível avaliar um atendimento seu já concluído' using errcode = 'P0001';
+  end if;
+
+  insert into feedback (appointment_id, client_id, professional_id, rating, comment)
+  values (p_appointment, v_client, v_professional, p_rating, nullif(trim(p_comment), ''))
+  on conflict (appointment_id)
+  do update set rating = excluded.rating, comment = excluded.comment;
+end;
+$$;
+
+revoke all on function leave_feedback from public;
+grant execute on function leave_feedback to authenticated;
+
+-- Horário lançado pela própria profissional (cliente que combinou pelo WhatsApp).
+create function create_appointment_for_client(
+  p_service_type uuid,
+  p_starts_at timestamptz,
+  p_name text,
+  p_whatsapp text
+) returns uuid
+language plpgsql security definer set search_path = public as $$
+declare
+  v_professional uuid := current_professional_id();
+  v_owner uuid;
+  v_duration integer;
+  v_client uuid;
+  v_id uuid;
+begin
+  if v_professional is null then
+    raise exception 'Sem permissão' using errcode = 'P0001';
+  end if;
+
+  select s.professional_id, st.duration_minutes into v_owner, v_duration
+  from service_types st join services s on s.id = st.service_id
+  where st.id = p_service_type;
+
+  if v_owner is distinct from v_professional then
+    raise exception 'Este serviço é de outra profissional' using errcode = 'P0001';
+  end if;
+
+  select c.id into v_client
+  from clients c
+  where c.user_id is null
+    and c.whatsapp = p_whatsapp
+    and exists (
+      select 1 from appointments a where a.client_id = c.id and a.professional_id = v_professional
+    )
+  limit 1;
+
+  if v_client is null then
+    insert into clients (name, whatsapp) values (p_name, p_whatsapp) returning id into v_client;
+  end if;
+
+  insert into appointments (
+    professional_id, client_id, service_type_id, starts_at, ends_at, price_cents, status
+  )
+  select
+    v_professional, v_client, p_service_type, p_starts_at,
+    p_starts_at + make_interval(mins => v_duration), sp.price_cents, 'confirmed'
+  from (select 1) _
+  left join service_prices sp on sp.service_type_id = p_service_type
+  returning id into v_id;
+
+  return v_id;
+end;
+$$;
+
+revoke all on function create_appointment_for_client from public;
+grant execute on function create_appointment_for_client to authenticated;
