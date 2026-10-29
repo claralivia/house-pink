@@ -2,6 +2,7 @@ import { PROS } from './site.js'
 
 export const NAV_LINKS = [
   { label: 'Serviços', hash: 'servicos' },
+  { label: 'Equipe', hash: 'equipe' },
   { label: 'Diferencial', hash: 'diferencial' },
   { label: 'Como agendar', hash: 'como' },
   { label: 'Contato', hash: 'contato' },

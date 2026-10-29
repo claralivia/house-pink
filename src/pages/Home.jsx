@@ -5,6 +5,7 @@ import Hero from '../components/home/Hero.jsx'
 import Marquee from '../components/home/Marquee.jsx'
 import Services from '../components/home/Services.jsx'
 import Steps from '../components/home/Steps.jsx'
+import Team from '../components/home/Team.jsx'
 import Why from '../components/home/Why.jsx'
 import Site from '../components/ui/Site.jsx'
 import { PAGE_TITLES } from '../data/site.js'
@@ -20,6 +21,7 @@ export default function Home() {
       <Hero seen={seen} />
       <Marquee />
       <Services />
+      <Team />
       <Why />
       <Dual />
       <Steps />
