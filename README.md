@@ -101,7 +101,7 @@ Tudo o que é dado do salão fica em `src/data`:
 
 ## Fotos
 
-A foto das duas e as de unhas são do salão (`duo.jpg`, `unhas*.jpg`). As fotos dos serviços da Herlany foram recortadas do catálogo dela (`public/img/servicos/`). Os cards de cílios e sobrancelhas da página inicial ainda usam fotos provisórias do [Unsplash](https://unsplash.com/license) (uso comercial livre).
+As fotos do site são do salão: a das duas e as de unhas (`duo.jpg`, `unhas*.jpg`) e as da Herlany, recortadas do catálogo dela (`public/img/servicos/`).
 
 ## Protótipo Online (Deploy Vercel)
 
