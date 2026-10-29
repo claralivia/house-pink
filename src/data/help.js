@@ -10,6 +10,7 @@ export const PRO_MODULES = [
         id: 'entrar',
         title: 'Entrar e conhecer o painel',
         summary: 'Onde ficam as coisas e como sair.',
+        video: 'pro-entrar-v1.mp4',
         steps: [
           'Abra o site da House Pink, toque em “Agendar” e depois em “Sou profissional”. Você também acha o “Entrar” no fim da página.',
           'Digite o seu e-mail e a sua senha e toque em “Entrar”. O site reconhece que você é profissional e abre a sua agenda.',
@@ -27,7 +28,7 @@ export const PRO_MODULES = [
         id: 'ver-agenda',
         title: 'Ver a agenda por dia ou por semana',
         summary: 'Como saber quem vem hoje e como está a semana.',
-        video: 'pro-ver-agenda-v3.mp4',
+        video: 'pro-ver-agenda-v1.mp4',
         steps: [
           'Toque em “Agenda”, na barra de baixo.',
           'Em “Dia”, toque no dia que quer ver na faixa de datas. Os dias com horários marcados mostram quantos são.',
@@ -39,6 +40,7 @@ export const PRO_MODULES = [
         id: 'atender',
         title: 'Confirmar, concluir e receber',
         summary: 'O caminho de um horário, da marcação ao pagamento.',
+        video: 'pro-atender-v1.mp4',
         steps: [
           'Toque no horário na agenda. Quando a cliente agenda pelo site, ele aparece como “Ainda não confirmado”.',
           'Toque em “Confirmar horário”. A cliente passa a ver que está confirmado.',
@@ -51,6 +53,7 @@ export const PRO_MODULES = [
         id: 'novo-horario',
         title: 'Marcar um horário para uma cliente',
         summary: 'Para quando a cliente chama pelo WhatsApp.',
+        video: 'pro-novo-horario-v1.mp4',
         steps: [
           'Na Agenda, toque em “Novo horário”.',
           'Escolha o dia e o serviço. Os horários livres daquele dia aparecem para você tocar.',
@@ -62,6 +65,7 @@ export const PRO_MODULES = [
         id: 'mudar-horario',
         title: 'Mudar ou cancelar um horário',
         summary: 'Trocar o dia, a hora, o valor ou desmarcar.',
+        video: 'pro-mudar-horario-v1.mp4',
         steps: [
           'Toque no horário na agenda.',
           'Para mudar, toque em “Mudar o horário ou o valor”. Troque o dia, a hora, a duração ou o valor e toque em “Salvar”.',
@@ -81,6 +85,7 @@ export const PRO_MODULES = [
         id: 'cadastrar',
         title: 'Cadastrar uma cliente',
         summary: 'Ter a sua lista de clientes sempre à mão.',
+        video: 'pro-cadastrar-v1.mp4',
         steps: [
           'Toque em “Clientes”, na barra de baixo.',
           'Toque em “Cadastrar cliente”.',
@@ -93,6 +98,7 @@ export const PRO_MODULES = [
         id: 'importar',
         title: 'Importar clientes de uma planilha',
         summary: 'Trazer de uma vez a lista que você já tem.',
+        video: 'pro-importar-v1.mp4',
         steps: [
           'Abra a sua planilha (Excel ou Google Planilhas) e deixe só duas colunas: nome e WhatsApp.',
           'Selecione as duas colunas e copie.',
@@ -105,6 +111,7 @@ export const PRO_MODULES = [
         id: 'agendar-para-cliente',
         title: 'Agendar direto para uma cliente da lista',
         summary: 'Dois toques e o horário está marcado.',
+        video: 'pro-agendar-para-cliente-v1.mp4',
         steps: [
           'Em “Clientes”, toque no nome da cliente.',
           'Toque em “Agendar horário para” e o nome dela.',
@@ -122,6 +129,7 @@ export const PRO_MODULES = [
         id: 'ver-ganhos',
         title: 'Ver quanto você recebeu',
         summary: 'Só você vê. Separado por forma de pagamento.',
+        video: 'pro-ver-ganhos-v1.mp4',
         steps: [
           'Toque em “Ganhos”, na barra de baixo.',
           'Escolha o período: Dia, Semana ou Mês. Use as setas para ver períodos anteriores.',
@@ -140,6 +148,7 @@ export const PRO_MODULES = [
         id: 'editar-servicos',
         title: 'Editar serviços, valores e fotos',
         summary: 'Mudar preço, duração, descrição e foto.',
+        video: 'pro-editar-servicos-v1.mp4',
         steps: [
           'Toque em “Serviços”, na barra de baixo.',
           'Toque em “Editar” no serviço que quer mudar.',
@@ -154,6 +163,7 @@ export const PRO_MODULES = [
         id: 'meu-perfil',
         title: 'Editar o meu perfil do site',
         summary: 'A sua foto e a sua apresentação.',
+        video: 'pro-meu-perfil-v1.mp4',
         steps: [
           'Toque em “Mais” e depois em “Meu perfil”.',
           'Toque em “Trocar a minha foto” e escolha uma imagem.',
@@ -171,6 +181,7 @@ export const PRO_MODULES = [
         id: 'ajustes-agenda',
         title: 'Horário de atendimento, folgas e dias à frente',
         summary: 'Você manda na sua agenda.',
+        video: 'pro-ajustes-agenda-v1.mp4',
         steps: [
           'Toque em “Mais” e depois em “Ajustes da agenda”.',
           'Em “Horário de atendimento”, ligue os dias em que atende e defina o começo e o fim de cada um.',
@@ -183,6 +194,7 @@ export const PRO_MODULES = [
         id: 'sinal-regras',
         title: 'Sinal e regras de atendimento',
         summary: 'O que a cliente lê antes de confirmar.',
+        video: 'pro-sinal-regras-v1.mp4',
         steps: [
           'Em “Mais”, toque em “Ajustes da agenda”.',
           'Em “Sinal”, digite o valor que a cliente paga para garantir o horário. Deixe vazio se você não cobra sinal.',
@@ -194,6 +206,7 @@ export const PRO_MODULES = [
         id: 'avaliacoes',
         title: 'Ver as avaliações das clientes',
         summary: 'Notas e comentários dos atendimentos.',
+        video: 'pro-avaliacoes-v1.mp4',
         steps: [
           'Toque em “Mais” e depois em “Avaliações das clientes”.',
           'Veja a sua nota média e os comentários que as clientes deixaram depois do atendimento.',
@@ -212,6 +225,7 @@ export const CLIENT_MODULES = [
         id: 'criar-conta',
         title: 'Criar a sua conta',
         summary: 'Para ver os valores e acompanhar os seus horários.',
+        video: 'client-criar-conta-v1.mp4',
         steps: [
           'No site, toque em “Agendar” e depois em “Sou cliente”. Você também acha o “Entrar” no fim da página.',
           'Na tela de entrar, toque em “Criar conta”.',
@@ -223,6 +237,7 @@ export const CLIENT_MODULES = [
         id: 'entrar',
         title: 'Entrar na sua conta',
         summary: 'E o que fazer se esquecer a senha.',
+        video: 'client-entrar-v1.mp4',
         steps: [
           'No site, toque em “Agendar” e depois em “Sou cliente”. Você também acha o “Entrar” no fim da página.',
           'Digite o seu e-mail e a sua senha e toque em “Entrar”.',
@@ -233,6 +248,7 @@ export const CLIENT_MODULES = [
         id: 'foto',
         title: 'Colocar a sua foto e editar os seus dados',
         summary: 'A profissional vê a foto e sabe quem é você.',
+        video: 'client-foto-v1.mp4',
         steps: [
           'Entre na sua conta e toque em “Perfil”, na barra de baixo.',
           'Toque em “Adicionar a minha foto” e escolha uma imagem do celular.',
@@ -249,6 +265,7 @@ export const CLIENT_MODULES = [
         id: 'agendar-sem-conta',
         title: 'Agendar sem criar conta',
         summary: 'Só o seu nome e o seu WhatsApp.',
+        video: 'client-agendar-sem-conta-v1.mp4',
         steps: [
           'Toque em “Agendar” no site.',
           'Na pergunta “Como você quer continuar?”, escolha “Sou visitante”.',
@@ -262,6 +279,7 @@ export const CLIENT_MODULES = [
         id: 'agendar-com-conta',
         title: 'Agendar com a sua conta',
         summary: 'Você vê os valores e acompanha tudo.',
+        video: 'client-agendar-com-conta-v1.mp4',
         steps: [
           'Entre na sua conta e toque em “Agendar um horário”. Se estiver no site, toque em “Agendar” e escolha “Sou cliente”.',
           'Escolha o serviço. Agora os valores aparecem.',
@@ -279,6 +297,7 @@ export const CLIENT_MODULES = [
         id: 'ver-cancelar',
         title: 'Ver ou cancelar o seu horário',
         summary: 'Está tudo na tela inicial da sua conta.',
+        video: 'client-ver-cancelar-v1.mp4',
         steps: [
           'Entre na sua conta. O seu próximo horário aparece em destaque, com o dia, a hora e a profissional.',
           'O aviso mostra se já está confirmado ou se a profissional ainda vai confirmar.',
@@ -291,6 +310,7 @@ export const CLIENT_MODULES = [
         id: 'avaliar',
         title: 'Dar a sua opinião',
         summary: 'Depois do atendimento, conte como foi.',
+        video: 'client-avaliar-v1.mp4',
         steps: [
           'Depois do atendimento, entre na sua conta.',
           'Na tela inicial, toque em “Dar a minha opinião”.',
