@@ -270,6 +270,7 @@ export const CLIENT_MODULES = [
           'Toque em “Agendar” no site.',
           'Na pergunta “Como você quer continuar?”, escolha “Sou visitante”.',
           'Escolha o serviço que você quer e o dia. Os horários livres aparecem para você tocar.',
+          'Quer unhas e cílios na mesma visita? Escolha um serviço de cada profissional: elas atendem ao mesmo tempo, e o site mostra só os horários em que as duas estão livres.',
           'Digite o seu nome e o seu WhatsApp e toque em “Confirmar horário”.',
           'Pronto: o horário fica reservado. A profissional confirma com você pelo WhatsApp, porque alguns serviços dependem de sinal.',
           'Criar uma conta é recomendado: assim você acompanha os seus horários.',
@@ -283,6 +284,7 @@ export const CLIENT_MODULES = [
         steps: [
           'Entre na sua conta e toque em “Agendar um horário”. Se estiver no site, toque em “Agendar” e escolha “Sou cliente”.',
           'Escolha o serviço. Os valores aparecem com ou sem conta.',
+          'Quer unhas e cílios na mesma visita? Escolha um serviço de cada profissional: elas atendem ao mesmo tempo, e o site mostra só os horários em que as duas estão livres.',
           'Escolha o dia e o horário e toque em “Confirmar horário”.',
           'Se você já fez um serviço antes, o botão “Agendar de novo” já deixa tudo escolhido.',
         ],
