@@ -24,26 +24,25 @@ join (values
   ('Sobrancelhas', 'Design', 0)
 ) as t (service, name, position) on t.service = sv.name;
 
--- Preços de exemplo, trocar pelos reais.
+-- Preços da Bruna, conforme a tabela dela. A Herlany ainda não tem preços cadastrados.
 insert into service_prices (service_type_id, price_cents)
 select st.id, v.price_cents
 from service_types st
 join services sv on sv.id = st.service_id
+join professionals p on p.id = sv.professional_id
 join (values
-  ('Unhas de porcelana', 'Acrílico natural', 15000),
-  ('Unhas de porcelana', 'Baby boomer', 17000),
-  ('Unhas de porcelana', 'Francesa reversa', 17000),
-  ('Unhas de porcelana', 'Manutenção', 9000),
-  ('Cílios', 'Aplicação', 12000),
-  ('Cílios', 'Manutenção', 7000),
-  ('Sobrancelhas', 'Design', 4000)
-) as v (service, type, price_cents) on v.service = sv.name and v.type = st.name;
+  ('Acrílico natural', 14000),
+  ('Baby boomer', 14000),
+  ('Francesa reversa', 15000),
+  ('Manutenção', 11000)
+) as v (type, price_cents) on v.type = st.name
+where p.key = 'bruna';
 
+-- Terça a sábado, das 9h30 às 17h30, para as duas.
 insert into working_hours (professional_id, weekday, starts_at, ends_at)
-select p.id, d, time '09:00', time '18:00'
+select p.id, d, time '09:30', time '17:30'
 from professionals p
-cross join generate_series(1, 6) as d
-where p.key = 'herlany' or d > 1;
+cross join generate_series(2, 6) as d;
 
 update professionals p
 set user_id = u.id
