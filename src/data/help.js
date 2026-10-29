@@ -11,7 +11,7 @@ export const PRO_MODULES = [
         title: 'Entrar e conhecer o painel',
         summary: 'Onde ficam as coisas e como sair.',
         steps: [
-          'Abra o site da House Pink e toque em “Entrar”, no canto de cima.',
+          'Abra o site da House Pink, toque em “Agendar” e depois em “Sou profissional”. Você também acha o “Entrar” no fim da página.',
           'Digite o seu e-mail e a sua senha e toque em “Entrar”. O site reconhece que você é profissional e abre a sua agenda.',
           'Você chega na sua agenda. Embaixo da tela ficam cinco abas: Agenda, Clientes, Ganhos, Serviços e Mais.',
           'Para trocar a senha ou sair, toque em “Mais” e depois em “Minha conta”.',
@@ -213,8 +213,8 @@ export const CLIENT_MODULES = [
         title: 'Criar a sua conta',
         summary: 'Para ver os valores e acompanhar os seus horários.',
         steps: [
-          'Toque em “Entrar”, no canto de cima do site.',
-          'Toque em “Criar conta”.',
+          'No site, toque em “Agendar” e depois em “Sou cliente”. Você também acha o “Entrar” no fim da página.',
+          'Na tela de entrar, toque em “Criar conta”.',
           'Digite o seu nome, o WhatsApp com DDD, o seu e-mail e escolha uma senha.',
           'Toque em “Criar conta”. Pode ser que a gente peça para você confirmar o e-mail: abra a mensagem que chegou e toque no link.',
         ],
@@ -224,7 +224,7 @@ export const CLIENT_MODULES = [
         title: 'Entrar na sua conta',
         summary: 'E o que fazer se esquecer a senha.',
         steps: [
-          'Toque em “Entrar”, no canto de cima do site.',
+          'No site, toque em “Agendar” e depois em “Sou cliente”. Você também acha o “Entrar” no fim da página.',
           'Digite o seu e-mail e a sua senha e toque em “Entrar”.',
           'Esqueceu a senha? Toque em “Esqueci a senha”, digite o seu e-mail e toque em “Enviar link”. Abra o e-mail e escolha uma senha nova.',
         ],
