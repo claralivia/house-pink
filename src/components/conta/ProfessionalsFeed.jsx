@@ -32,27 +32,34 @@ export default function ProfessionalsFeed() {
           </header>
           <p className="app-feed-bio">{pro.bio}</p>
 
-          {pro.services.map((service) => (
-            <div key={service.id}>
-              <h4 className="app-label">{service.name}</h4>
-              <ul className="app-feed-types">
-                {service.service_types.map((type) => (
-                  <li key={type.id}>
-                    <Link to={`/agendar?tipo=${type.id}`} className="app-feed-type">
-                      {type.image_url ? <img src={type.image_url} alt="" loading="lazy" /> : null}
-                      <span>
-                        <span className="app-item-name">{type.name}</span>
-                        <span className="app-item-meta">
-                          {formatDuration(type.duration_minutes)}
-                        </span>
-                        <PriceTag cents={type.service_prices?.price_cents} signedIn />
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+          <details className="app-details">
+            <summary>Ver serviços e valores</summary>
+            <div className="app-details-body">
+              {pro.services.map((service) => (
+                <div key={service.id}>
+                  <h4 className="app-label">{service.name}</h4>
+                  <ul className="app-feed-types">
+                    {service.service_types.map((type) => (
+                      <li key={type.id}>
+                        <Link to={`/agendar?tipo=${type.id}`} className="app-feed-type">
+                          {type.image_url ? (
+                            <img src={type.image_url} alt="" loading="lazy" />
+                          ) : null}
+                          <span>
+                            <span className="app-item-name">{type.name}</span>
+                            <span className="app-item-meta">
+                              {formatDuration(type.duration_minutes)}
+                            </span>
+                            <PriceTag cents={type.service_prices?.price_cents} signedIn />
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
-          ))}
+          </details>
         </article>
       ))}
     </section>
