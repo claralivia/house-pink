@@ -13,12 +13,12 @@ Site e sistema de agendamento do **House Pink Nails & Lashes**, salão em Fortal
 
 ## Telas
 
-- **Início (`/`)** — responsiva (celular, tablet e computador), com abertura animada, fotos, serviços por profissional, o diferencial da sessão conjunta (as duas atendem ao mesmo tempo), passo a passo e contatos.
+- **Início (`/`)** — responsiva (celular, tablet e computador), com abertura animada, fotos, serviços por profissional, o diferencial da sessão conjunta (as duas atendem ao mesmo tempo), a equipe (foto, descrição, WhatsApp e Instagram de cada profissional), passo a passo e contatos.
 - **Agendar (`/agendar`)** — começa perguntando se a pessoa é cliente, visitante ou profissional (visitantes não veem os valores). Depois, em 3 passos: serviço e tipo (cartões com foto, descrição e valor), data e horário, e os dados. Sem criar conta: só nome e WhatsApp.
 - **Entrar (`/entrar`)** — login único com e-mail e senha: quem é profissional abre a agenda (`/painel`) e quem é cliente abre a conta (`/conta`).
 - **Criar conta (`/cadastro`)** — cadastro da cliente, que passa a ver os valores e a acompanhar os seus horários.
-- **Minha conta (`/conta`)** — início com o próximo horário em destaque (regras, WhatsApp e cancelar) e atalho para agendar de novo, histórico com gastos do mês e perfil.
-- **Agenda (`/painel`)** — da profissional, com quatro abas: **Agenda** (visão por dia, com faixa de dias, ou por semana, em grade de horas como no Google Agenda; ao tocar num horário abre um painel com botões grandes para confirmar, concluir com a forma de pagamento, registrar sinal, editar e cancelar horários), **Ganhos** (por dia, semana e mês, com filtro de Pix, cartão e dinheiro, sinal separado do restante e fechamento do período), **Serviços** (valor, duração, descrição, foto e disponibilidade de cada tipo) e **Ajustes** (prazo de agendamento, horário de atendimento, folgas e férias, sinal e regras de atendimento).
+- **Minha conta (`/conta`)** — início com o próximo horário em destaque (status em palavras simples, WhatsApp, regras e cancelar), atalho para agendar de novo, pedido de avaliação do último atendimento, histórico com gastos do mês e perfil (foto, nome e WhatsApp).
+- **Agenda (`/painel`)** — da profissional, com quatro abas: ****Novo horário** para lançar o que chega pelo WhatsApp. **Agenda** (visão por dia, com faixa de dias, ou por semana, em grade de horas como no Google Agenda; ao tocar num horário abre um painel com botões grandes para confirmar, concluir com a forma de pagamento, registrar sinal, editar e cancelar horários), **Ganhos** (por dia, semana e mês, com filtro de Pix, cartão e dinheiro, sinal separado do restante e fechamento do período), **Serviços** (valor, duração, descrição, foto e disponibilidade de cada tipo) e **Avaliações** (nota média e comentários das clientes) e **Ajustes** (prazo de agendamento, horário de atendimento, folgas e férias, sinal e regras de atendimento).
 
 Os valores dos serviços não aparecem em nenhuma página pública.
 
