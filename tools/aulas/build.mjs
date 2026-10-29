@@ -4,7 +4,7 @@ import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts'
 import { execFileSync } from 'node:child_process'
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
-import { dirname, join, resolve } from 'node:path'
+import { basename, dirname, join, resolve } from 'node:path'
 
 const [specPath, outPath] = process.argv.slice(2)
 const spec = JSON.parse(readFileSync(specPath, 'utf8'))
@@ -26,6 +26,9 @@ const VOICE = spec.voice ?? 'pt-BR-ThalitaMultilingualNeural'
 const RATE = spec.rate ?? '-8%'
 const PAUSE = spec.pause ?? 0.55
 const SCALE = 2
+const W = spec.width ?? 378
+const shotsFile = join(base, 'shots.json')
+const SHOTS = existsSync(shotsFile) ? JSON.parse(readFileSync(shotsFile, 'utf8')) : {}
 const CAPTION_H = 260
 const WRAP = 30
 
@@ -73,11 +76,14 @@ const ring = join(work, 'ring.png')
 if (!existsSync(ring)) {
   ffmpeg([
     '-f', 'lavfi',
-    '-i', "color=c=black:s=256x256:d=1,format=rgba,geq=r='255':g='0':b='136':a='if(lt(abs(hypot(X-128,Y-128)-112),8),255,if(lt(hypot(X-128,Y-128),104),70,0))'",
+    '-i', "color=c=black:s=256x256:d=1,format=rgba,geq=r='255':g='0':b='136':a='if(lt(abs(hypot(X-128,Y-128)-112),8),255,if(lt(hypot(X-128,Y-128),104),34,0))'",
     '-frames:v', '1', ring,
   ])
 }
 
+const sub = basename(outPath, '.mp4')
+const segDir = join(work, sub)
+mkdirSync(segDir, { recursive: true })
 const segments = []
 for (const [index, beat] of spec.beats.entries()) {
   const hash = createHash('sha1').update(`${VOICE}|${RATE}|${beat.text}`).digest('hex').slice(0, 10)
@@ -86,13 +92,18 @@ for (const [index, beat] of spec.beats.entries()) {
   await speak(beat.text, audio)
 
   const seconds = duration(audio) + PAUSE
-  const rings = beat.rings ?? []
-  const image = resolve(base, spec.images[beat.image])
+  const rings = (beat.rings ?? []).map((ring) => {
+    if (typeof ring !== 'string') return ring
+    const found = SHOTS[beat.shot]?.[ring]
+    if (!found) throw new Error(`círculo "${ring}" não existe na captura "${beat.shot}"`)
+    return found
+  })
+  const image = beat.shot ? join(base, beat.shot + '.png') : resolve(base, spec.images[beat.image])
   const inputs = ['-loop', '1', '-framerate', '25', '-t', String(seconds), '-i', image]
   for (let i = 0; i < rings.length; i++) inputs.push('-loop', '1', '-framerate', '25', '-t', String(seconds), '-i', ring)
   inputs.push('-i', audio)
 
-  const filters = [`[0:v]crop=378:844:0:0,scale=${378 * SCALE}:${844 * SCALE}:flags=lanczos,setsar=1,format=yuv420p[b0]`]
+  const filters = [`[0:v]crop=${W}:844:0:0,scale=${W * SCALE}:${844 * SCALE}:flags=lanczos,setsar=1,format=yuv420p[b0]`]
   rings.forEach(([x, y, d], i) => {
     const size = `${d * SCALE}*(1+0.1*sin(2*PI*1.6*t))`
     filters.push(`[${i + 1}:v]scale=w='${size}':h='${size}':eval=frame,format=rgba[r${i}]`)
@@ -100,14 +111,14 @@ for (const [index, beat] of spec.beats.entries()) {
       `[b${i}][r${i}]overlay=x='${x * SCALE}-w/2':y='${y * SCALE}-h/2':format=auto,format=yuv420p[b${i + 1}]`,
     )
   })
-  const captionFile = `cap-${index}.txt`
+  const captionFile = `${sub}/cap-${index}.txt`
   writeFileSync(join(work, captionFile), wrap(beat.text))
   filters.push(
-    `[b${rings.length}]pad=${378 * SCALE}:${844 * SCALE + CAPTION_H}:0:0:color=0x141012,drawtext=fontfile=font.ttf:textfile=${captionFile}:fontcolor=white:fontsize=44:line_spacing=12:x=(w-text_w)/2:y=${844 * SCALE}+(${CAPTION_H}-text_h)/2,format=yuv420p[vout]`,
+    `[b${rings.length}]pad=${W * SCALE}:${844 * SCALE + CAPTION_H}:0:0:color=0x141012,drawtext=fontfile=font.ttf:textfile=${captionFile}:fontcolor=white:fontsize=44:line_spacing=12:x=(w-text_w)/2:y=${844 * SCALE}+(${CAPTION_H}-text_h)/2,format=yuv420p[vout]`,
   )
   filters.push(`[${rings.length + 1}:a]pan=stereo|c0=c0|c1=c0,aresample=48000,apad=pad_dur=${PAUSE},atrim=0:${seconds},asetpts=PTS-STARTPTS[a]`)
 
-  const segment = join(work, `s-${String(index).padStart(2, '0')}.mp4`)
+  const segment = join(segDir, `s-${String(index).padStart(2, '0')}.mp4`)
   ffmpeg([
     ...inputs,
     '-filter_complex', filters.join(';'),
@@ -120,7 +131,7 @@ for (const [index, beat] of spec.beats.entries()) {
   segments.push(segment)
 }
 
-const list = join(work, 'lista.txt')
+const list = join(segDir, 'lista.txt')
 writeFileSync(list, segments.map((file) => `file '${file.replaceAll('\\', '/')}'`).join('\n'))
 ffmpeg([
   '-f', 'concat', '-safe', '0', '-i', list,

@@ -1,0 +1,12 @@
+{ "width": 390, "beats": [
+ { "shot": "horario-pendente", "text": "Nesta aula, vamos ver o caminho de um horário, da marcação até o pagamento." },
+ { "shot": "horario-pendente", "text": "Quando a cliente agenda pelo site, o horário chega como: ainda não confirmado." },
+ { "shot": "horario-pendente", "text": "Toque em Confirmar horário. A cliente passa a ver que está confirmado.", "rings": ["confirmar"] },
+ { "shot": "horario-confirmado", "text": "Se você cobra sinal e a cliente já pagou, toque em Cliente pagou o sinal.", "rings": ["sinal"] },
+ { "shot": "horario-sinal", "text": "Escolha como ela pagou: Pix, cartão ou dinheiro.", "rings": ["pix", "cartao", "dinheiro"] },
+ { "shot": "horario-confirmado", "text": "Depois do atendimento, toque em Atendimento concluído.", "rings": ["concluido"] },
+ { "shot": "horario-pagamento", "text": "Agora escolha como a cliente pagou o restante: Pix, cartão ou dinheiro.", "rings": ["pix", "cartao", "dinheiro"] },
+ { "shot": "horario-pagamento", "text": "Se ela ainda não pagou, toque em Ainda não pagou.", "rings": ["naoPagou"] },
+ { "shot": "horario-confirmado", "text": "Para avisar a cliente, use Falar com a cliente no WhatsApp.", "rings": ["whatsapp"] },
+ { "shot": "horario-confirmado", "text": "Pronto! É assim que você acompanha cada atendimento." }
+]}
