@@ -17,12 +17,13 @@ import { usePageTitle } from '../hooks/usePageTitle.js'
 import {
   bookingErrorMessage,
   createAppointment,
+  createAppointments,
   createJointAppointment,
   fetchMyClient,
 } from '../lib/api.js'
-import { joinDays } from '../lib/slots.js'
 import { timestamp } from '../lib/dates.js'
 import { whatsappUrl } from '../lib/links.js'
+import { joinDays } from '../lib/slots.js'
 
 const findType = (catalog, typeId) =>
   catalog
@@ -46,73 +47,105 @@ export default function Agendar() {
   const preset = useMemo(() => findType(catalog.data, params.get('tipo')), [catalog.data, params])
 
   const [picked, setPicked] = useState(null)
+  const [mode, setMode] = useState('apart')
   const [stepName, setStepName] = useState(null)
-  const [date, setDate] = useState(null)
-  const [minutes, setMinutes] = useState(null)
+  const [times, setTimes] = useState([])
+  const [whenIndex, setWhenIndex] = useState(0)
   const [submitting, setSubmitting] = useState(false)
   const [notice, setNotice] = useState(null)
   const [booking, setBooking] = useState(null)
   const [guest, setGuest] = useState(false)
 
   const choices = picked ?? (preset ? [preset] : [])
+  const together = choices.length > 1 && mode === 'together'
+  // Cada grupo é marcado uma vez: as duas juntas, ou um serviço de cada vez.
+  const groups = together ? [choices] : choices.map((choice) => [choice])
+  const index = Math.min(whenIndex, Math.max(0, groups.length - 1))
+  const { date = null, minutes = null } = times[index] ?? {}
   const step = stepName ?? (preset ? 'when' : 'catalog')
   const needsAccess = !account.loading && !signedIn && !guest && !preset && !booking
+  const total = 2 + groups.length
+
   const first = useAvailability(choices[0]?.pro, choices[0]?.type.duration_minutes ?? 0)
   const second = useAvailability(choices[1]?.pro, choices[1]?.type.duration_minutes ?? 0)
-  const availability = choices[1]
-    ? {
-        days: joinDays(first.days, second.days),
-        error: first.error || second.error,
-        loading: first.loading || second.loading,
-        reload: () => {
-          first.reload()
-          second.reload()
-        },
-      }
-    : first
+  const joined = {
+    days: joinDays(first.days, second.days),
+    error: first.error || second.error,
+    loading: first.loading || second.loading,
+    reload: () => {
+      first.reload()
+      second.reload()
+    },
+  }
+  let availability = first
+  if (together) availability = joined
+  else if (index === 1) availability = second
+
+  const setTime = (patch) =>
+    setTimes((current) => {
+      const next = [...current]
+      next[index] = { ...next[index], ...patch }
+      return next
+    })
 
   // Um serviço por profissional: tocar em outro da mesma troca; tocar no escolhido tira.
   const pick = (next) => {
     const rest = choices.filter(({ pro }) => pro.id !== next.pro.id)
     const already = choices.some(({ type }) => type.id === next.type.id)
     setPicked(already ? rest : [...rest, next])
-    setDate(null)
-    setMinutes(null)
+    setTimes([])
+    setWhenIndex(0)
   }
 
-  const pickDate = (next) => {
-    setDate(next)
-    setMinutes(null)
-    setNotice(null)
+  const pickMode = (next) => {
+    setMode(next)
+    setTimes([])
+    setWhenIndex(0)
   }
 
   const restart = () => {
     setPicked([])
-    setDate(null)
-    setMinutes(null)
+    setTimes([])
+    setWhenIndex(0)
     setNotice(null)
     setBooking(null)
     setStepName('catalog')
   }
 
+  const items = groups.flatMap((group, i) => group.map((choice) => ({ choice, ...times[i] })))
+  const ready = groups.every(
+    (_, i) => times[i]?.minutes !== undefined && times[i]?.minutes !== null,
+  )
+
+  const next = () => {
+    if (index < groups.length - 1) setWhenIndex(index + 1)
+    else setStepName('who')
+  }
+
+  const back = () => {
+    if (index > 0) setWhenIndex(index - 1)
+    else setStepName('catalog')
+  }
+
   const submit = async (client) => {
     setSubmitting(true)
     try {
-      const startsAt = timestamp(date, minutes)
-      if (choices.length > 1) {
-        await createJointAppointment({
-          serviceTypeIds: choices.map(({ type }) => type.id),
-          startsAt,
-          ...client,
-        })
+      const startsAt = items.map((item) => timestamp(item.date, item.minutes))
+      const typeIds = items.map(({ choice }) => choice.type.id)
+      if (together) {
+        await createJointAppointment({ serviceTypeIds: typeIds, startsAt: startsAt[0], ...client })
+      } else if (items.length > 1) {
+        await createAppointments({ serviceTypeIds: typeIds, startsAt, ...client })
       } else {
-        await createAppointment({ serviceTypeId: choices[0].type.id, startsAt, ...client })
+        await createAppointment({ serviceTypeId: typeIds[0], startsAt: startsAt[0], ...client })
       }
-      setBooking({ choices, date, minutes })
+      setBooking({ items, joint: together })
     } catch (failure) {
       setNotice(bookingErrorMessage(failure))
-      setMinutes(null)
-      availability.reload()
+      setTimes((current) => current.map((time) => ({ ...time, minutes: null })))
+      setWhenIndex(0)
+      first.reload()
+      second.reload()
       setStepName('when')
     } finally {
       setSubmitting(false)
@@ -123,34 +156,46 @@ export default function Agendar() {
     catalog: catalog.data ? (
       <CatalogScreen
         catalog={catalog.data}
-        signedIn={signedIn}
         selected={choices}
+        mode={mode}
+        onMode={pickMode}
         onPick={pick}
-        onNext={() => setStepName('when')}
+        onNext={() => {
+          setWhenIndex(0)
+          setStepName('when')
+        }}
       />
     ) : null,
     when: choices.length ? (
       <WhenScreen
-        choices={choices}
+        choices={groups[index]}
         availability={availability}
         date={date}
         minutes={minutes}
         notice={notice}
-        onBack={() => setStepName('catalog')}
-        onDate={pickDate}
-        onMinutes={setMinutes}
-        onNext={() => setStepName('who')}
+        step={`Passo ${2 + index} de ${total}`}
+        backLabel={index > 0 ? `Horário com a ${groups[index - 1][0].pro.first}` : 'Serviço'}
+        onBack={back}
+        onDate={(value) => {
+          setTime({ date: value, minutes: null })
+          setNotice(null)
+        }}
+        onMinutes={(value) => setTime({ minutes: value })}
+        onNext={next}
       />
     ) : null,
     who:
-      choices.length && minutes !== null ? (
+      choices.length && ready ? (
         <WhoScreen
-          choices={choices}
-          date={date}
-          minutes={minutes}
+          items={items}
+          joint={together}
+          step={`Passo ${total} de ${total}`}
           submitting={submitting}
           initial={myClient.data}
-          onBack={() => setStepName('when')}
+          onBack={() => {
+            setWhenIndex(groups.length - 1)
+            setStepName('when')
+          }}
           onSubmit={submit}
         />
       ) : null,

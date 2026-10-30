@@ -2025,3 +2025,17 @@ img.app-avatar.pro {
   width: 20px;
   height: 20px;
 }
+.app-methods.two {
+  grid-template-columns: repeat(2, 1fr);
+}
+.app-methods.in-bar {
+  margin-top: 0;
+  margin-bottom: var(--space-2);
+}
+.app-methods.in-bar .app-slot {
+  min-height: 44px;
+  padding: 0 var(--space-2);
+}
+.app-main.with-bar:has(.app-methods.in-bar) {
+  padding-bottom: 210px;
+}

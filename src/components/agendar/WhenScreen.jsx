@@ -11,6 +11,8 @@ export default function WhenScreen({
   date,
   minutes,
   notice,
+  step,
+  backLabel,
   onBack,
   onDate,
   onMinutes,
@@ -22,8 +24,8 @@ export default function WhenScreen({
 
   return (
     <>
-      <BackButton onClick={onBack}>Serviço</BackButton>
-      <p className="app-step">Passo 2 de 3</p>
+      <BackButton onClick={onBack}>{backLabel}</BackButton>
+      <p className="app-step">{step}</p>
       <h1 className="app-headline">Escolha a data</h1>
       <p className="app-lead">
         {choices.map(({ type, pro }, index) => (

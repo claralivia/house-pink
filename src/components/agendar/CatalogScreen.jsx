@@ -8,7 +8,15 @@ import PriceTag from './PriceTag.jsx'
 
 const priceOf = (type) => type.service_prices?.price_cents
 
-export default function CatalogScreen({ catalog, signedIn, selected, onPick, onNext }) {
+export default function CatalogScreen({
+  catalog,
+  signedIn,
+  selected,
+  mode,
+  onMode,
+  onPick,
+  onNext,
+}) {
   const [filter, setFilter] = useState('all')
   const services = catalog.flatMap((pro) => pro.services.map((service) => ({ pro, service })))
   const shown =
@@ -26,8 +34,8 @@ export default function CatalogScreen({ catalog, signedIn, selected, onPick, onN
 
       {catalog.length > 1 ? (
         <p className="app-help">
-          Quer unhas e cílios na mesma visita? Escolha um serviço de cada profissional: elas atendem
-          ao mesmo tempo.
+          Quer unhas e cílios? Escolha um serviço de cada profissional. Depois, você decide se marca
+          ao mesmo tempo ou em horários diferentes.
         </p>
       ) : null}
 
@@ -83,11 +91,34 @@ export default function CatalogScreen({ catalog, signedIn, selected, onPick, onN
       ))}
 
       <BottomBar>
+        {selected.length > 1 ? (
+          <div className="app-methods two in-bar" role="group" aria-label="Como marcar">
+            <button
+              type="button"
+              className="app-slot"
+              aria-pressed={mode === 'apart'}
+              onClick={() => onMode('apart')}
+            >
+              Horários diferentes
+            </button>
+            <button
+              type="button"
+              className="app-slot"
+              aria-pressed={mode === 'together'}
+              onClick={() => onMode('together')}
+            >
+              Ao mesmo tempo
+            </button>
+          </div>
+        ) : null}
         {selected.length ? (
           <p className="app-bar-note">
-            {selected.map(({ type }) => type.name).join(' + ')} ·{' '}
-            {formatDuration(sessionMinutes(selected))}
-            {selected.length > 1 ? ', ao mesmo tempo' : ''}
+            {selected.map(({ type }) => type.name).join(' + ')}
+            {selected.length > 1 && mode === 'together'
+              ? ` · ${formatDuration(sessionMinutes(selected))}, as duas juntas`
+              : ''}
+            {selected.length > 1 && mode === 'apart' ? ' · um horário com cada uma' : ''}
+            {selected.length === 1 ? ` · ${formatDuration(sessionMinutes(selected))}` : ''}
           </p>
         ) : null}
         <AppButton full disabled={!selected.length} onClick={onNext}>

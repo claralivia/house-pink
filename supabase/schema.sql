@@ -611,3 +611,31 @@ $$;
 
 revoke all on function create_joint_appointment from public;
 grant execute on function create_joint_appointment to anon, authenticated;
+
+-- Dois serviços de profissionais diferentes, cada um no seu horário. Reserva os dois ou nenhum.
+create function create_appointments(
+  p_service_types uuid[],
+  p_starts_at timestamptz[],
+  p_name text,
+  p_whatsapp text
+) returns uuid[]
+language plpgsql security definer set search_path = public as $$
+declare
+  v_ids uuid[] := '{}';
+  i integer;
+begin
+  if array_length(p_service_types, 1) is distinct from array_length(p_starts_at, 1)
+    or coalesce(array_length(p_service_types, 1), 0) not between 1 and 2 then
+    raise exception 'Escolha um serviço e um horário para cada profissional' using errcode = 'P0001';
+  end if;
+
+  for i in 1 .. array_length(p_service_types, 1) loop
+    v_ids := v_ids || create_appointment(p_service_types[i], p_starts_at[i], p_name, p_whatsapp);
+  end loop;
+
+  return v_ids;
+end;
+$$;
+
+revoke all on function create_appointments from public;
+grant execute on function create_appointments to anon, authenticated;

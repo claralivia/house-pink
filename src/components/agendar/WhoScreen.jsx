@@ -11,15 +11,12 @@ import BookingSummary from './BookingSummary.jsx'
 
 const FORM_ID = 'booking-form'
 
-export default function WhoScreen({
-  choices,
-  date,
-  minutes,
-  submitting,
-  initial,
-  onBack,
-  onSubmit,
-}) {
+const confirmLabel = (items) =>
+  items.every((item) => item.minutes === items[0].minutes && item.date === items[0].date)
+    ? `Confirmar horário às ${clock(items[0].minutes)}`
+    : 'Confirmar os dois horários'
+
+export default function WhoScreen({ items, joint, step, submitting, initial, onBack, onSubmit }) {
   const [name, setName] = useState(initial?.name ?? '')
   const [whatsapp, setWhatsapp] = useState(initial?.whatsapp.replace(/^55/, '') ?? '')
   const [invalid, setInvalid] = useState(false)
@@ -34,11 +31,11 @@ export default function WhoScreen({
   return (
     <>
       <BackButton onClick={onBack}>Data e horário</BackButton>
-      <p className="app-step">Passo 3 de 3</p>
+      <p className="app-step">{step}</p>
       <h1 className="app-headline">Seus dados</h1>
-      <BookingSummary choices={choices} date={date} minutes={minutes} />
-      {choices.map(({ pro }) => (
-        <BookingNotes key={pro.id} pro={pro} />
+      <BookingSummary items={items} joint={joint} />
+      {items.map(({ choice }) => (
+        <BookingNotes key={choice.pro.id} pro={choice.pro} />
       ))}
       <form id={FORM_ID} onSubmit={handleSubmit}>
         <Field
@@ -59,7 +56,7 @@ export default function WhoScreen({
           help={
             invalid
               ? 'Confira o número: use o DDD e os 9 dígitos.'
-              : `${choices.length > 1 ? 'Cada uma' : `A ${proNames(choices)}`} confirma o seu horário por este WhatsApp.`
+              : `${items.length > 1 ? 'Cada uma' : `A ${proNames(items.map(({ choice }) => choice))}`} confirma o seu horário por este WhatsApp.`
           }
           value={whatsapp}
           onChange={(event) => setWhatsapp(event.target.value)}
@@ -67,7 +64,7 @@ export default function WhoScreen({
       </form>
       <BottomBar>
         <AppButton full type="submit" form={FORM_ID} disabled={submitting}>
-          {submitting ? 'Reservando...' : `Confirmar horário às ${clock(minutes)}`}
+          {submitting ? 'Reservando...' : confirmLabel(items)}
         </AppButton>
       </BottomBar>
     </>

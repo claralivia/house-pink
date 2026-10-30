@@ -88,6 +88,16 @@ export const createJointAppointment = async ({ serviceTypeIds, startsAt, name, w
     }),
   )
 
+export const createAppointments = async ({ serviceTypeIds, startsAt, name, whatsapp }) =>
+  unwrap(
+    await supabase.rpc('create_appointments', {
+      p_service_types: serviceTypeIds,
+      p_starts_at: startsAt,
+      p_name: name,
+      p_whatsapp: whatsapp,
+    }),
+  )
+
 export const signIn = async (email, password) =>
   unwrap(await supabase.auth.signInWithPassword({ email, password }))
 
